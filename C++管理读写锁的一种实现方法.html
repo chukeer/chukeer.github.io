@@ -13,7 +13,7 @@
 <meta name="keywords" content="c++, Language, " />
 
 <meta property="og:title" content="C++管理读写锁的一种实现方法 "/>
-<meta property="og:url" content="chukeer.github.io/C++管理读写锁的一种实现方法.html" />
+<meta property="og:url" content="http://chukeer.github.io/C++管理读写锁的一种实现方法.html" />
 <meta property="og:description" content="读写锁是一种常用的线程同步机制，在多线程环境下访问同一内存区域时往往会用到，本篇不是介绍读写锁的原理，而是在假设读者都知道读写锁的基本使用方式的前提下，介绍一种管理读写锁的方法 读写锁的基本使用¶ === 为了读起来好理解，还是先介绍一下基本概念和使用 基本概念 读写锁有三种状态：读模式加锁，写模式加锁，不加锁 读写锁的使用规则 在当前没有写锁的情况下，读者可以立马获取读锁 在当前没有读锁和写锁的情况下，写者可以立马获取写锁 也就是说，可以多个读者同时获取读锁，而写者只能有一个，且在写的时候不能读 基本使用 初始化和销毁 int pthread_rwlock_init(pthread_rwlock_t *restrict rwlock, const pthread_rwlockattr_t *restrict attr); int pthread_rwlock_destroy(pthread_rwlock_t *rwlock); 读和写 int pthread_rwlock_rdlock(pthread_rwlock_t *rwlock); int pthread_rwlock_wrlock(pthread_rwlock_t *rwlock); 另外还有非阻塞模式的读写 int pthread_rwlock_trywrlock(pthread_rwlock_t ..." />
 <meta property="og:site_name" content="LittleWhite" />
 <meta property="og:article:author" content="littlewhite" />
@@ -28,12 +28,12 @@
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
         --!>
-        <link href="chukeer.github.io/theme/css/bootstrap-combined.min.css" rel="stylesheet">
-        <link href="chukeer.github.io/theme/css/font-awesome.css" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/css/pygments.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/tipuesearch/tipuesearch.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/css/elegant.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/css/custom.css" media="screen">
+        <link href="http://chukeer.github.io/theme/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="http://chukeer.github.io/theme/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/custom.css" media="screen">
     </head>
     <body>
         <div id="content-sans-footer">
@@ -45,14 +45,14 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </a>
-                    <a class="brand" href="chukeer.github.io/"><span class=site-name>LittleWhite</span></a>
+                    <a class="brand" href="http://chukeer.github.io/"><span class=site-name>LittleWhite</span></a>
                     <div class="nav-collapse collapse">
                         <ul class="nav pull-right top-menu">
-                            <li ><a href="chukeer.github.io">Home</a></li>
-                            <li ><a href="chukeer.github.io/categories.html">Categories</a></li>
-                            <li ><a href="chukeer.github.io/tags.html">Tags</a></li>
-                            <li ><a href="chukeer.github.io/archives.html">Archives</a></li>
-                            <li><form class="navbar-search" action="chukeer.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            <li ><a href="http://chukeer.github.io">Home</a></li>
+                            <li ><a href="http://chukeer.github.io/categories.html">Categories</a></li>
+                            <li ><a href="http://chukeer.github.io/tags.html">Tags</a></li>
+                            <li ><a href="http://chukeer.github.io/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="http://chukeer.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
                         </ul>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
 <article>
 <div class="row-fluid">
     <header class="page-header span10 offset2">
-    <h1><a href="chukeer.github.io/C++管理读写锁的一种实现方法.html"> C++管理读写锁的一种实现方法  </a></h1>
+    <h1><a href="http://chukeer.github.io/C++管理读写锁的一种实现方法.html"> C++管理读写锁的一种实现方法  </a></h1>
     </header>
 </div>
 
@@ -308,8 +308,8 @@ int pthread_rwlock_tryrdlock(pthread_rwlock_t *rwlock);
             <aside>
             <nav>
             <ul class="articles-timeline">
-                <li class="previous-article">« <a href="chukeer.github.io/glog安装及使用.html" title="Previous: glog安装及使用">glog安装及使用</a></li>
-                <li class="next-article"><a href="chukeer.github.io/Mac OS X重装操作系统.html" title="Next: Mac OS X重装操作系统">Mac OS X重装操作系统</a> »</li>
+                <li class="previous-article">« <a href="http://chukeer.github.io/glog安装及使用.html" title="Previous: glog安装及使用">glog安装及使用</a></li>
+                <li class="next-article"><a href="http://chukeer.github.io/Mac OS X重装操作系统.html" title="Next: Mac OS X重装操作系统">Mac OS X重装操作系统</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -324,13 +324,13 @@ int pthread_rwlock_tryrdlock(pthread_rwlock_t *rwlock);
             </tr>
             <tr>
                 <td>Category</td>
-                <td><a class="category-link" href="chukeer.github.io/categories.html#language-ref">Language</a></td>
+                <td><a class="category-link" href="http://chukeer.github.io/categories.html#language-ref">Language</a></td>
             </tr>
             <tr>
                 <td>Tags</td>
                 <td>
                     <ul class="list-of-tags tags-in-article">
-                        <li><a href="chukeer.github.io/tags.html#c-ref">c++
+                        <li><a href="http://chukeer.github.io/tags.html#c-ref">c++
                             <span>14</span>
 </a></li>
                     </ul>
@@ -357,8 +357,8 @@ int pthread_rwlock_tryrdlock(pthread_rwlock_t *rwlock);
         <script src="http://code.jquery.com/jquery.min.js"></script>
         <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
         -->
-        <script src="chukeer.github.io/theme/js/jquery.min.js"></script>
-        <script src="chukeer.github.io/theme/js/bootstrap.min.js"></script>
+        <script src="http://chukeer.github.io/theme/js/jquery.min.js"></script>
+        <script src="http://chukeer.github.io/theme/js/bootstrap.min.js"></script>
         <script>
             function validateForm(query)
             {

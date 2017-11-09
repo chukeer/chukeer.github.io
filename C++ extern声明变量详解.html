@@ -13,7 +13,7 @@
 <meta name="keywords" content="c++, Language, " />
 
 <meta property="og:title" content="C++ extern声明变量详解 "/>
-<meta property="og:url" content="chukeer.github.io/C++ extern声明变量详解.html" />
+<meta property="og:url" content="http://chukeer.github.io/C++ extern声明变量详解.html" />
 <meta property="og:description" content="extern声明变量无外乎如下两种： 1、声明全局变量 2、声明函数 今天我们只谈extern，什么const、static之类等等与之相关或不相关的一律忽略，下面就分别对以上两种情况一一讲解 声明和定义¶ 既然提到extern声明变量，那我们就必须搞清楚声明和定义的区别。 这里我们将普通数据变量和函数统称变量。从内存分配角度来说，声明和定义的区别在于声明一个变量不会分配内存，而定义一个变量会分配内存。一个变量可以被声明多次，但是只能被定义一次。 基于以上前提，我们可以把声明和定义类比为指针和内存的关系。我们知道，指针其实就是指向内存的一个符号，变量的定义就好比一块内存区域，而声明就好比它的指针，可以有多个指针指向同一个内存区域，而一个指针只能指向一个内存区域，这样就很好理解为什么变量只能被定义一次，如果被定义多次，那就会分配多个内存，这样你通过变量的声明到底去找哪块内存区域呢，这会是个问题。 对于数据来说，声明和定义往往是同时存在的，比如下面的一行语句 int data; 这样既声明了data同时也定义了data，怎样做到只声明而不定义呢，用extern就可以了 extern int data； 对于函数来说，声明和定义就很容易区分了，一般我们会将声明放在头文件而将定义放在源文件里 void hello ..." />
 <meta property="og:site_name" content="LittleWhite" />
 <meta property="og:article:author" content="littlewhite" />
@@ -28,12 +28,12 @@
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
         --!>
-        <link href="chukeer.github.io/theme/css/bootstrap-combined.min.css" rel="stylesheet">
-        <link href="chukeer.github.io/theme/css/font-awesome.css" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/css/pygments.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/tipuesearch/tipuesearch.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/css/elegant.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/css/custom.css" media="screen">
+        <link href="http://chukeer.github.io/theme/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="http://chukeer.github.io/theme/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/custom.css" media="screen">
     </head>
     <body>
         <div id="content-sans-footer">
@@ -45,14 +45,14 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </a>
-                    <a class="brand" href="chukeer.github.io/"><span class=site-name>LittleWhite</span></a>
+                    <a class="brand" href="http://chukeer.github.io/"><span class=site-name>LittleWhite</span></a>
                     <div class="nav-collapse collapse">
                         <ul class="nav pull-right top-menu">
-                            <li ><a href="chukeer.github.io">Home</a></li>
-                            <li ><a href="chukeer.github.io/categories.html">Categories</a></li>
-                            <li ><a href="chukeer.github.io/tags.html">Tags</a></li>
-                            <li ><a href="chukeer.github.io/archives.html">Archives</a></li>
-                            <li><form class="navbar-search" action="chukeer.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            <li ><a href="http://chukeer.github.io">Home</a></li>
+                            <li ><a href="http://chukeer.github.io/categories.html">Categories</a></li>
+                            <li ><a href="http://chukeer.github.io/tags.html">Tags</a></li>
+                            <li ><a href="http://chukeer.github.io/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="http://chukeer.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
                         </ul>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
 <article>
 <div class="row-fluid">
     <header class="page-header span10 offset2">
-    <h1><a href="chukeer.github.io/C++ extern声明变量详解.html"> C++ extern声明变量详解  </a></h1>
+    <h1><a href="http://chukeer.github.io/C++ extern声明变量详解.html"> C++ extern声明变量详解  </a></h1>
     </header>
 </div>
 
@@ -198,8 +198,8 @@
             <aside>
             <nav>
             <ul class="articles-timeline">
-                <li class="previous-article">« <a href="chukeer.github.io/Mac OS X重装操作系统.html" title="Previous: Mac OS X重装操作系统">Mac OS X重装操作系统</a></li>
-                <li class="next-article"><a href="chukeer.github.io/店大莫欺人.html" title="Next: 店大莫欺人">店大莫欺人</a> »</li>
+                <li class="previous-article">« <a href="http://chukeer.github.io/Mac OS X重装操作系统.html" title="Previous: Mac OS X重装操作系统">Mac OS X重装操作系统</a></li>
+                <li class="next-article"><a href="http://chukeer.github.io/店大莫欺人.html" title="Next: 店大莫欺人">店大莫欺人</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -214,13 +214,13 @@
             </tr>
             <tr>
                 <td>Category</td>
-                <td><a class="category-link" href="chukeer.github.io/categories.html#language-ref">Language</a></td>
+                <td><a class="category-link" href="http://chukeer.github.io/categories.html#language-ref">Language</a></td>
             </tr>
             <tr>
                 <td>Tags</td>
                 <td>
                     <ul class="list-of-tags tags-in-article">
-                        <li><a href="chukeer.github.io/tags.html#c-ref">c++
+                        <li><a href="http://chukeer.github.io/tags.html#c-ref">c++
                             <span>14</span>
 </a></li>
                     </ul>
@@ -247,8 +247,8 @@
         <script src="http://code.jquery.com/jquery.min.js"></script>
         <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
         -->
-        <script src="chukeer.github.io/theme/js/jquery.min.js"></script>
-        <script src="chukeer.github.io/theme/js/bootstrap.min.js"></script>
+        <script src="http://chukeer.github.io/theme/js/jquery.min.js"></script>
+        <script src="http://chukeer.github.io/theme/js/bootstrap.min.js"></script>
         <script>
             function validateForm(query)
             {

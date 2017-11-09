@@ -4,364 +4,364 @@ xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitem
 xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
-<loc>chukeer.github.io/</loc>
-<lastmod>2017-11-09T22:11:46-00:00</lastmod>
+<loc>http://chukeer.github.io/</loc>
+<lastmod>2017-11-09T22:15:23-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/archives.html</loc>
-<lastmod>2017-11-09T22:11:46-00:00</lastmod>
+<loc>http://chukeer.github.io/archives.html</loc>
+<lastmod>2017-11-09T22:15:23-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/tags.html</loc>
-<lastmod>2017-11-09T22:11:46-00:00</lastmod>
+<loc>http://chukeer.github.io/tags.html</loc>
+<lastmod>2017-11-09T22:15:23-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/categories.html</loc>
-<lastmod>2017-11-09T22:11:46-00:00</lastmod>
+<loc>http://chukeer.github.io/categories.html</loc>
+<lastmod>2017-11-09T22:15:23-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/Boost Asio async_write回调行为分析.html</loc>
+<loc>http://chukeer.github.io/Boost Asio async_write回调行为分析.html</loc>
 <lastmod>2017-11-09T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/cppcheck使用方式详解.html</loc>
+<loc>http://chukeer.github.io/cppcheck使用方式详解.html</loc>
 <lastmod>2017-11-09T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/Unix IPC概述.html</loc>
+<loc>http://chukeer.github.io/Unix IPC概述.html</loc>
 <lastmod>2016-12-11T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/linux shell发送邮件.html</loc>
+<loc>http://chukeer.github.io/linux shell发送邮件.html</loc>
 <lastmod>2016-11-23T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/iTerm2固定标签名字.html</loc>
+<loc>http://chukeer.github.io/iTerm2固定标签名字.html</loc>
 <lastmod>2016-10-31T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/linux终端输出带颜色字符.html</loc>
+<loc>http://chukeer.github.io/linux终端输出带颜色字符.html</loc>
 <lastmod>2016-10-28T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/深入理解字符编码.html</loc>
+<loc>http://chukeer.github.io/深入理解字符编码.html</loc>
 <lastmod>2016-10-19T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/Mac Alfred快速复制剪贴板和指定文本.html</loc>
+<loc>http://chukeer.github.io/Mac Alfred快速复制剪贴板和指定文本.html</loc>
 <lastmod>2016-10-10T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/Linux文件读写机制及优化方式.html</loc>
+<loc>http://chukeer.github.io/Linux文件读写机制及优化方式.html</loc>
 <lastmod>2016-09-19T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/http缓存服务器淘汰策略.html</loc>
+<loc>http://chukeer.github.io/http缓存服务器淘汰策略.html</loc>
 <lastmod>2016-09-06T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/libevent evhttp学习——http服务端.html</loc>
+<loc>http://chukeer.github.io/libevent evhttp学习——http服务端.html</loc>
 <lastmod>2016-08-06T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/libevent evhttp学习——http客户端.html</loc>
+<loc>http://chukeer.github.io/libevent evhttp学习——http客户端.html</loc>
 <lastmod>2016-08-05T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/C++ and Python 多线程笔记.html</loc>
+<loc>http://chukeer.github.io/C++ and Python 多线程笔记.html</loc>
 <lastmod>2016-08-01T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/Python import机制备忘笔记.html</loc>
+<loc>http://chukeer.github.io/Python import机制备忘笔记.html</loc>
 <lastmod>2016-04-07T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/curl参数说明.html</loc>
+<loc>http://chukeer.github.io/curl参数说明.html</loc>
 <lastmod>2016-03-09T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/gdb调试技巧备忘.html</loc>
+<loc>http://chukeer.github.io/gdb调试技巧备忘.html</loc>
 <lastmod>2015-09-11T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/Python调用C++程序备忘笔记.html</loc>
+<loc>http://chukeer.github.io/Python调用C++程序备忘笔记.html</loc>
 <lastmod>2015-09-02T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/Linux程序编译链接动态库版本的问题.html</loc>
+<loc>http://chukeer.github.io/Linux程序编译链接动态库版本的问题.html</loc>
 <lastmod>2015-08-17T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/一行Python代码——电话簿上的字符.html</loc>
+<loc>http://chukeer.github.io/一行Python代码——电话簿上的字符.html</loc>
 <lastmod>2015-05-12T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/一行Python代码——单词逆转.html</loc>
+<loc>http://chukeer.github.io/一行Python代码——单词逆转.html</loc>
 <lastmod>2015-05-11T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/vim比较目录diff.html</loc>
+<loc>http://chukeer.github.io/vim比较目录diff.html</loc>
 <lastmod>2015-04-27T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/vim自动更新tag.html</loc>
+<loc>http://chukeer.github.io/vim自动更新tag.html</loc>
 <lastmod>2015-04-10T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/Mac OS X下快速复制文件路径.html</loc>
+<loc>http://chukeer.github.io/Mac OS X下快速复制文件路径.html</loc>
 <lastmod>2015-03-16T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/Mac如何自动发邮件给kindle推送文档.html</loc>
+<loc>http://chukeer.github.io/Mac如何自动发邮件给kindle推送文档.html</loc>
 <lastmod>2015-03-06T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/shell命令技巧——文本去重并保持原有顺序.html</loc>
+<loc>http://chukeer.github.io/shell命令技巧——文本去重并保持原有顺序.html</loc>
 <lastmod>2015-01-18T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/Linux技巧——用dd生成指定大小的文件.html</loc>
+<loc>http://chukeer.github.io/Linux技巧——用dd生成指定大小的文件.html</loc>
 <lastmod>2014-12-07T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/如何让Magic Mouse真正拥有Magic.html</loc>
+<loc>http://chukeer.github.io/如何让Magic Mouse真正拥有Magic.html</loc>
 <lastmod>2014-12-03T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/linux脚本实现自动输入密码.html</loc>
+<loc>http://chukeer.github.io/linux脚本实现自动输入密码.html</loc>
 <lastmod>2014-11-12T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/网站二三事.html</loc>
+<loc>http://chukeer.github.io/网站二三事.html</loc>
 <lastmod>2014-10-18T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/没有main函数的helloworld.html</loc>
+<loc>http://chukeer.github.io/没有main函数的helloworld.html</loc>
 <lastmod>2014-10-14T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/强符号和弱符号.html</loc>
+<loc>http://chukeer.github.io/强符号和弱符号.html</loc>
 <lastmod>2014-10-13T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/Mac必备软件推荐.html</loc>
+<loc>http://chukeer.github.io/Mac必备软件推荐.html</loc>
 <lastmod>2014-10-11T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/extern “C”用法详解.html</loc>
+<loc>http://chukeer.github.io/extern “C”用法详解.html</loc>
 <lastmod>2014-09-29T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/如何打造舒适的linux开发环境.html</loc>
+<loc>http://chukeer.github.io/如何打造舒适的linux开发环境.html</loc>
 <lastmod>2014-09-26T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/让你的程序更优雅的sleep.html</loc>
+<loc>http://chukeer.github.io/让你的程序更优雅的sleep.html</loc>
 <lastmod>2014-09-23T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/独自下场.html</loc>
+<loc>http://chukeer.github.io/独自下场.html</loc>
 <lastmod>2014-09-21T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/Vim c++开发环境插件安装详解.html</loc>
+<loc>http://chukeer.github.io/Vim c++开发环境插件安装详解.html</loc>
 <lastmod>2014-09-02T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/店大莫欺人.html</loc>
+<loc>http://chukeer.github.io/店大莫欺人.html</loc>
 <lastmod>2014-08-31T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/C++ extern声明变量详解.html</loc>
+<loc>http://chukeer.github.io/C++ extern声明变量详解.html</loc>
 <lastmod>2014-08-26T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/Mac OS X重装操作系统.html</loc>
+<loc>http://chukeer.github.io/Mac OS X重装操作系统.html</loc>
 <lastmod>2014-08-07T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/C++管理读写锁的一种实现方法.html</loc>
+<loc>http://chukeer.github.io/C++管理读写锁的一种实现方法.html</loc>
 <lastmod>2014-07-01T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/glog安装及使用.html</loc>
+<loc>http://chukeer.github.io/glog安装及使用.html</loc>
 <lastmod>2014-06-18T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/c++实战——多人会话聊天室2.html</loc>
+<loc>http://chukeer.github.io/c++实战——多人会话聊天室2.html</loc>
 <lastmod>2014-05-19T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/vpn简介以及国内外分流设置.html</loc>
+<loc>http://chukeer.github.io/vpn简介以及国内外分流设置.html</loc>
 <lastmod>2014-05-18T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/c++实战——多人会话聊天室1.html</loc>
+<loc>http://chukeer.github.io/c++实战——多人会话聊天室1.html</loc>
 <lastmod>2014-05-10T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/C++ const知多少.html</loc>
+<loc>http://chukeer.github.io/C++ const知多少.html</loc>
 <lastmod>2014-04-24T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/wordpress自定义页面显示所有文章列表.html</loc>
+<loc>http://chukeer.github.io/wordpress自定义页面显示所有文章列表.html</loc>
 <lastmod>2014-03-27T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>chukeer.github.io/python网页解析利器——BeautifulSoup.html</loc>
+<loc>http://chukeer.github.io/python网页解析利器——BeautifulSoup.html</loc>
 <lastmod>2014-03-21T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>

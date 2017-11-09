@@ -13,7 +13,7 @@
 <meta name="keywords" content="vim, Skill, " />
 
 <meta property="og:title" content="vim自动更新tag "/>
-<meta property="og:url" content="chukeer.github.io/vim自动更新tag.html" />
+<meta property="og:url" content="http://chukeer.github.io/vim自动更新tag.html" />
 <meta property="og:description" content="用vim浏览C/C++代码时可以用ctags生成tag文件，这样可以很方便跳转到函数定义的地方，这个功能几乎所有的图形界面编辑器都有，比如VS，source insight等等，但是vim的tags文件是静态的，也就是说如果我们在源代码里新增了一些函数，原来的tags是不会自动更新的，我们也无法跳转到新增的函数定义处，这个问题怎么怎么办呢 我在网上搜索了很多地方，普遍给的方案就是将ctags命令映射到一个快捷键，这样只需要按一下快捷键就会生成新的tags文件，但这样有几个不方便的地方 每次tags文件都是全量生成，如果工程很大，生成tags文件可能需要十多秒，而运行命令的过程中是不能编辑文件的，也不可能每次修改文件都去更新tags vim下运行ctags命令其实是在命令模式下输入!ctags -R .，它会在vim的工作目录下生成tags文件，而如果你当前工作目录并不是你想要生成tags的目录，还得切换目录 总之是，想要自动更新tags，没有这么简单的事儿！ 但是VS和source insight就可以做到，我们秉着凡是其它编辑器能实现的功能vim都能实现的原则来分析下问题的实质，其实不管是VS还是source insight它们都需要建立工程，然后将源代码导入工程，我们可以猜想到这些编辑器会对工程里的源文件建立索引，这样就可以实现各种跳转功能，当有代码更新或是新增源文件时，编辑器自然也可以检测到，这时它暗地里对源文件重新建立索引，我们就可以对新增的函数进行跳转。既然编辑器可以暗地里做很多事，我们为何不也这样呢，计算机的处理器大多数时候都是空闲的，不用白不用 试想我们在Linux下有一堆源代码，我们需要经常编辑和阅读这些代码，它的根目录结构应该是这样的 ..." />
 <meta property="og:site_name" content="LittleWhite" />
 <meta property="og:article:author" content="littlewhite" />
@@ -28,12 +28,12 @@
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
         --!>
-        <link href="chukeer.github.io/theme/css/bootstrap-combined.min.css" rel="stylesheet">
-        <link href="chukeer.github.io/theme/css/font-awesome.css" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/css/pygments.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/tipuesearch/tipuesearch.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/css/elegant.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/css/custom.css" media="screen">
+        <link href="http://chukeer.github.io/theme/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="http://chukeer.github.io/theme/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/custom.css" media="screen">
     </head>
     <body>
         <div id="content-sans-footer">
@@ -45,14 +45,14 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </a>
-                    <a class="brand" href="chukeer.github.io/"><span class=site-name>LittleWhite</span></a>
+                    <a class="brand" href="http://chukeer.github.io/"><span class=site-name>LittleWhite</span></a>
                     <div class="nav-collapse collapse">
                         <ul class="nav pull-right top-menu">
-                            <li ><a href="chukeer.github.io">Home</a></li>
-                            <li ><a href="chukeer.github.io/categories.html">Categories</a></li>
-                            <li ><a href="chukeer.github.io/tags.html">Tags</a></li>
-                            <li ><a href="chukeer.github.io/archives.html">Archives</a></li>
-                            <li><form class="navbar-search" action="chukeer.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            <li ><a href="http://chukeer.github.io">Home</a></li>
+                            <li ><a href="http://chukeer.github.io/categories.html">Categories</a></li>
+                            <li ><a href="http://chukeer.github.io/tags.html">Tags</a></li>
+                            <li ><a href="http://chukeer.github.io/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="http://chukeer.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
                         </ul>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
 <article>
 <div class="row-fluid">
     <header class="page-header span10 offset2">
-    <h1><a href="chukeer.github.io/vim自动更新tag.html"> vim自动更新tag  </a></h1>
+    <h1><a href="http://chukeer.github.io/vim自动更新tag.html"> vim自动更新tag  </a></h1>
     </header>
 </div>
 
@@ -139,8 +139,8 @@ log_file="auto_tags.log"
             <aside>
             <nav>
             <ul class="articles-timeline">
-                <li class="previous-article">« <a href="chukeer.github.io/Mac OS X下快速复制文件路径.html" title="Previous: Mac OS X下快速复制文件路径">Mac OS X下快速复制文件路径</a></li>
-                <li class="next-article"><a href="chukeer.github.io/vim比较目录diff.html" title="Next: vim比较目录diff">vim比较目录diff</a> »</li>
+                <li class="previous-article">« <a href="http://chukeer.github.io/Mac OS X下快速复制文件路径.html" title="Previous: Mac OS X下快速复制文件路径">Mac OS X下快速复制文件路径</a></li>
+                <li class="next-article"><a href="http://chukeer.github.io/vim比较目录diff.html" title="Next: vim比较目录diff">vim比较目录diff</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -155,13 +155,13 @@ log_file="auto_tags.log"
             </tr>
             <tr>
                 <td>Category</td>
-                <td><a class="category-link" href="chukeer.github.io/categories.html#skill-ref">Skill</a></td>
+                <td><a class="category-link" href="http://chukeer.github.io/categories.html#skill-ref">Skill</a></td>
             </tr>
             <tr>
                 <td>Tags</td>
                 <td>
                     <ul class="list-of-tags tags-in-article">
-                        <li><a href="chukeer.github.io/tags.html#vim-ref">vim
+                        <li><a href="http://chukeer.github.io/tags.html#vim-ref">vim
                             <span>3</span>
 </a></li>
                     </ul>
@@ -188,8 +188,8 @@ log_file="auto_tags.log"
         <script src="http://code.jquery.com/jquery.min.js"></script>
         <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
         -->
-        <script src="chukeer.github.io/theme/js/jquery.min.js"></script>
-        <script src="chukeer.github.io/theme/js/bootstrap.min.js"></script>
+        <script src="http://chukeer.github.io/theme/js/jquery.min.js"></script>
+        <script src="http://chukeer.github.io/theme/js/bootstrap.min.js"></script>
         <script>
             function validateForm(query)
             {

@@ -13,7 +13,7 @@
 <meta name="keywords" content="linux, Skill, " />
 
 <meta property="og:title" content="linux脚本实现自动输入密码 "/>
-<meta property="og:url" content="chukeer.github.io/linux脚本实现自动输入密码.html" />
+<meta property="og:url" content="http://chukeer.github.io/linux脚本实现自动输入密码.html" />
 <meta property="og:description" content="使用Linux的程序员对输入密码这个举动一定不陌生，在Linux下对用户有严格的权限限制，干很多事情越过了权限就得输入密码，比如使用超级用户执行命令，又比如ftp、ssh连接远程主机等等，如下图 那么问题来了，在脚本自动化执行的时候需要输入密码怎么办？比如你的脚本里有一条scp语句，总不能在脚本执行到这一句时手动输入密码吧 针对于ssh或scp命令，可能有人会回答是建立信任关系，关于建立ssh信任关系的方法请自行百度Google，只需要两行简单的命令即可搞定，但这并不是常规的解决方案，如果是ftp连接就没辙了，况且，你不可能为了执行某些命令去给每个你要连接的主机都手动建立ssh信任，这已经偏离了今天主题的本意，今天要说的是在脚本里自动输入密码，我们可以想象下，更优雅的方式应该是在脚本里自己配置密码，当屏幕交互需要输入时自动输入进去，要达到这样的效果就需要用到expect 安装¶ CentOS下安装命令很简单，如下 sudo yum install expect 至于Mac用户，可以通过homebrew安装(需要先安装homebrew，请自行Google) brew install expect 测试脚本¶ 我们写一个简单的脚本实现scp拷贝文件，在脚本里配置密码，保存为scp.exp如下 1 2 3 4 5 6 ..." />
 <meta property="og:site_name" content="LittleWhite" />
 <meta property="og:article:author" content="littlewhite" />
@@ -28,12 +28,12 @@
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
         --!>
-        <link href="chukeer.github.io/theme/css/bootstrap-combined.min.css" rel="stylesheet">
-        <link href="chukeer.github.io/theme/css/font-awesome.css" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/css/pygments.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/tipuesearch/tipuesearch.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/css/elegant.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/css/custom.css" media="screen">
+        <link href="http://chukeer.github.io/theme/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="http://chukeer.github.io/theme/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/custom.css" media="screen">
     </head>
     <body>
         <div id="content-sans-footer">
@@ -45,14 +45,14 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </a>
-                    <a class="brand" href="chukeer.github.io/"><span class=site-name>LittleWhite</span></a>
+                    <a class="brand" href="http://chukeer.github.io/"><span class=site-name>LittleWhite</span></a>
                     <div class="nav-collapse collapse">
                         <ul class="nav pull-right top-menu">
-                            <li ><a href="chukeer.github.io">Home</a></li>
-                            <li ><a href="chukeer.github.io/categories.html">Categories</a></li>
-                            <li ><a href="chukeer.github.io/tags.html">Tags</a></li>
-                            <li ><a href="chukeer.github.io/archives.html">Archives</a></li>
-                            <li><form class="navbar-search" action="chukeer.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            <li ><a href="http://chukeer.github.io">Home</a></li>
+                            <li ><a href="http://chukeer.github.io/categories.html">Categories</a></li>
+                            <li ><a href="http://chukeer.github.io/tags.html">Tags</a></li>
+                            <li ><a href="http://chukeer.github.io/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="http://chukeer.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
                         </ul>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
 <article>
 <div class="row-fluid">
     <header class="page-header span10 offset2">
-    <h1><a href="chukeer.github.io/linux脚本实现自动输入密码.html"> linux脚本实现自动输入密码  </a></h1>
+    <h1><a href="http://chukeer.github.io/linux脚本实现自动输入密码.html"> linux脚本实现自动输入密码  </a></h1>
     </header>
 </div>
 
@@ -188,8 +188,8 @@
             <aside>
             <nav>
             <ul class="articles-timeline">
-                <li class="previous-article">« <a href="chukeer.github.io/网站二三事.html" title="Previous: 网站二三事">网站二三事</a></li>
-                <li class="next-article"><a href="chukeer.github.io/如何让Magic Mouse真正拥有Magic.html" title="Next: 如何让Magic Mouse真正拥有Magic">如何让Magic Mouse真正拥有Magic</a> »</li>
+                <li class="previous-article">« <a href="http://chukeer.github.io/网站二三事.html" title="Previous: 网站二三事">网站二三事</a></li>
+                <li class="next-article"><a href="http://chukeer.github.io/如何让Magic Mouse真正拥有Magic.html" title="Next: 如何让Magic Mouse真正拥有Magic">如何让Magic Mouse真正拥有Magic</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -204,13 +204,13 @@
             </tr>
             <tr>
                 <td>Category</td>
-                <td><a class="category-link" href="chukeer.github.io/categories.html#skill-ref">Skill</a></td>
+                <td><a class="category-link" href="http://chukeer.github.io/categories.html#skill-ref">Skill</a></td>
             </tr>
             <tr>
                 <td>Tags</td>
                 <td>
                     <ul class="list-of-tags tags-in-article">
-                        <li><a href="chukeer.github.io/tags.html#linux-ref">linux
+                        <li><a href="http://chukeer.github.io/tags.html#linux-ref">linux
                             <span>7</span>
 </a></li>
                     </ul>
@@ -237,8 +237,8 @@
         <script src="http://code.jquery.com/jquery.min.js"></script>
         <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
         -->
-        <script src="chukeer.github.io/theme/js/jquery.min.js"></script>
-        <script src="chukeer.github.io/theme/js/bootstrap.min.js"></script>
+        <script src="http://chukeer.github.io/theme/js/jquery.min.js"></script>
+        <script src="http://chukeer.github.io/theme/js/bootstrap.min.js"></script>
         <script>
             function validateForm(query)
             {

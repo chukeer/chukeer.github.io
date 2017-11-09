@@ -13,7 +13,7 @@
 <meta name="keywords" content="shell, Skill, " />
 
 <meta property="og:title" content="shell命令技巧——文本去重并保持原有顺序 "/>
-<meta property="og:url" content="chukeer.github.io/shell命令技巧——文本去重并保持原有顺序.html" />
+<meta property="og:url" content="http://chukeer.github.io/shell命令技巧——文本去重并保持原有顺序.html" />
 <meta property="og:description" content="简单来说，这个技巧对应的是如下一种场景 假设有文本如下 cccc aaaa bbbb dddd bbbb cccc aaaa 现在需要对它进行去重处理，这个很简单，sort -u就可以搞定，但是如果我希望保持文本原有的顺序，比如这里有两个aaaa，我只是希望去掉第二个aaaa，而第一个aaaa在bbbb的前面，去重后仍旧要在它前面，所以我期望的输出结果是 cccc aaaa bbbb dddd 当然，这个问题本身并不难，用C++或python写起来都很容易，但所谓杀机焉用牛刀，能用shell命令解决时，它永远都是我们的首选。答案在最后给出，下面说说我是如何想到这样 我们有时候想把自己的目录加入环境变量PATH时会在~/.bashrc文件中这样写，比如待加入的目录为\$HOME/bin export PATH=$HOME/bin:$PATH 这样我们等于是在PATH追加了路径\\(HOME/bin并让它在最前面被搜索到，但当我们执行source ~/.bashrc后，\\) ...if (!document.getElementById(&#39;mathjaxscript_pelican_#%@#$@#&#39;)) { var align = &#34;center&#34;, indent = &#34;0em&#34;, linebreak = &#34;false&#34;; if (false) { align = (screen.width" />
 <meta property="og:site_name" content="LittleWhite" />
 <meta property="og:article:author" content="littlewhite" />
@@ -28,12 +28,12 @@
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
         --!>
-        <link href="chukeer.github.io/theme/css/bootstrap-combined.min.css" rel="stylesheet">
-        <link href="chukeer.github.io/theme/css/font-awesome.css" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/css/pygments.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/tipuesearch/tipuesearch.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/css/elegant.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/css/custom.css" media="screen">
+        <link href="http://chukeer.github.io/theme/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="http://chukeer.github.io/theme/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/custom.css" media="screen">
     </head>
     <body>
         <div id="content-sans-footer">
@@ -45,14 +45,14 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </a>
-                    <a class="brand" href="chukeer.github.io/"><span class=site-name>LittleWhite</span></a>
+                    <a class="brand" href="http://chukeer.github.io/"><span class=site-name>LittleWhite</span></a>
                     <div class="nav-collapse collapse">
                         <ul class="nav pull-right top-menu">
-                            <li ><a href="chukeer.github.io">Home</a></li>
-                            <li ><a href="chukeer.github.io/categories.html">Categories</a></li>
-                            <li ><a href="chukeer.github.io/tags.html">Tags</a></li>
-                            <li ><a href="chukeer.github.io/archives.html">Archives</a></li>
-                            <li><form class="navbar-search" action="chukeer.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            <li ><a href="http://chukeer.github.io">Home</a></li>
+                            <li ><a href="http://chukeer.github.io/categories.html">Categories</a></li>
+                            <li ><a href="http://chukeer.github.io/tags.html">Tags</a></li>
+                            <li ><a href="http://chukeer.github.io/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="http://chukeer.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
                         </ul>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
 <article>
 <div class="row-fluid">
     <header class="page-header span10 offset2">
-    <h1><a href="chukeer.github.io/shell命令技巧——文本去重并保持原有顺序.html"> shell命令技巧——文本去重并保持原有顺序  </a></h1>
+    <h1><a href="http://chukeer.github.io/shell命令技巧——文本去重并保持原有顺序.html"> shell命令技巧——文本去重并保持原有顺序  </a></h1>
     </header>
 </div>
 
@@ -187,8 +187,8 @@ cut -f2- : 输出第2列及之后的内容，默认分隔符为\t
             <aside>
             <nav>
             <ul class="articles-timeline">
-                <li class="previous-article">« <a href="chukeer.github.io/Linux技巧——用dd生成指定大小的文件.html" title="Previous: Linux技巧——用dd生成指定大小的文件">Linux技巧——用dd生成指定大小的文件</a></li>
-                <li class="next-article"><a href="chukeer.github.io/Mac如何自动发邮件给kindle推送文档.html" title="Next: Mac如何自动发邮件给kindle推送文档">Mac如何自动发邮件给kindle推送文档</a> »</li>
+                <li class="previous-article">« <a href="http://chukeer.github.io/Linux技巧——用dd生成指定大小的文件.html" title="Previous: Linux技巧——用dd生成指定大小的文件">Linux技巧——用dd生成指定大小的文件</a></li>
+                <li class="next-article"><a href="http://chukeer.github.io/Mac如何自动发邮件给kindle推送文档.html" title="Next: Mac如何自动发邮件给kindle推送文档">Mac如何自动发邮件给kindle推送文档</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -203,13 +203,13 @@ cut -f2- : 输出第2列及之后的内容，默认分隔符为\t
             </tr>
             <tr>
                 <td>Category</td>
-                <td><a class="category-link" href="chukeer.github.io/categories.html#skill-ref">Skill</a></td>
+                <td><a class="category-link" href="http://chukeer.github.io/categories.html#skill-ref">Skill</a></td>
             </tr>
             <tr>
                 <td>Tags</td>
                 <td>
                     <ul class="list-of-tags tags-in-article">
-                        <li><a href="chukeer.github.io/tags.html#shell-ref">shell
+                        <li><a href="http://chukeer.github.io/tags.html#shell-ref">shell
                             <span>3</span>
 </a></li>
                     </ul>
@@ -236,8 +236,8 @@ cut -f2- : 输出第2列及之后的内容，默认分隔符为\t
         <script src="http://code.jquery.com/jquery.min.js"></script>
         <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
         -->
-        <script src="chukeer.github.io/theme/js/jquery.min.js"></script>
-        <script src="chukeer.github.io/theme/js/bootstrap.min.js"></script>
+        <script src="http://chukeer.github.io/theme/js/jquery.min.js"></script>
+        <script src="http://chukeer.github.io/theme/js/bootstrap.min.js"></script>
         <script>
             function validateForm(query)
             {
