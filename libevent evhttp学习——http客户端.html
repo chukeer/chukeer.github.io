@@ -13,7 +13,7 @@
 <meta name="keywords" content="c++, libevent, http, Language, " />
 
 <meta property="og:title" content="libevent evhttp学习——http客户端 "/>
-<meta property="og:url" content="/libevent evhttp学习——http客户端.html" />
+<meta property="og:url" content="chukeer.github.io/libevent evhttp学习——http客户端.html" />
 <meta property="og:description" content="基本环境¶ 使用版本为libevent-2.1.5，目前为beta版，其中evhttp和旧版区别在于新增了如下接口 // 设置回调函数，在包头读取完成后回调 void evhttp_request_set_header_cb (struct evhttp_request *, int(*cb)(struct evhttp_request *, void *)) // 设置回调函数，在body有数据返回后回调 void evhttp_request_set_chunked_cb (struct evhttp_request *, void(*cb)(struct evhttp_request *, void *)) 这样的好处是可以在合适的时机回调我们注册的回调函数，比如下载1G的文件，在之前的版本只有下载完成后才会回调，现在每下载一部分数据就会回调一次，让上层应用更加灵活，尤其在http代理时，可以做到边下载边回复 2.1.5版本的完整接口文档详见http://www.wangafu.net/~nickm/libevent-2.1/doxygen/html/http_8h.html 请求流程 ..." />
 <meta property="og:site_name" content="LittleWhite" />
 <meta property="og:article:author" content="littlewhite" />
@@ -28,12 +28,12 @@
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
         --!>
-        <link href="/theme/css/bootstrap-combined.min.css" rel="stylesheet">
-        <link href="/theme/css/font-awesome.css" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="/theme/css/pygments.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="/theme/tipuesearch/tipuesearch.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="/theme/css/elegant.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="/theme/css/custom.css" media="screen">
+        <link href="chukeer.github.io/theme/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="chukeer.github.io/theme/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/css/custom.css" media="screen">
     </head>
     <body>
         <div id="content-sans-footer">
@@ -45,14 +45,14 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </a>
-                    <a class="brand" href="/"><span class=site-name>LittleWhite</span></a>
+                    <a class="brand" href="chukeer.github.io/"><span class=site-name>LittleWhite</span></a>
                     <div class="nav-collapse collapse">
                         <ul class="nav pull-right top-menu">
-                            <li ><a href="">Home</a></li>
-                            <li ><a href="/categories.html">Categories</a></li>
-                            <li ><a href="/tags.html">Tags</a></li>
-                            <li ><a href="/archives.html">Archives</a></li>
-                            <li><form class="navbar-search" action="/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            <li ><a href="chukeer.github.io">Home</a></li>
+                            <li ><a href="chukeer.github.io/categories.html">Categories</a></li>
+                            <li ><a href="chukeer.github.io/tags.html">Tags</a></li>
+                            <li ><a href="chukeer.github.io/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="chukeer.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
                         </ul>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
 <article>
 <div class="row-fluid">
     <header class="page-header span10 offset2">
-    <h1><a href="/libevent evhttp学习——http客户端.html"> libevent evhttp学习——http客户端  </a></h1>
+    <h1><a href="chukeer.github.io/libevent evhttp学习——http客户端.html"> libevent evhttp学习——http客户端  </a></h1>
     </header>
 </div>
 
@@ -277,8 +277,8 @@ int event_base_dispatch(struct event_base *);</code></p>
             <aside>
             <nav>
             <ul class="articles-timeline">
-                <li class="previous-article">« <a href="/C++ and Python 多线程笔记.html" title="Previous: C++ &amp; Python 多线程笔记">C++ & Python 多线程笔记</a></li>
-                <li class="next-article"><a href="/libevent evhttp学习——http服务端.html" title="Next: libevent evhttp学习——http服务端">libevent evhttp学习——http服务端</a> »</li>
+                <li class="previous-article">« <a href="chukeer.github.io/C++ and Python 多线程笔记.html" title="Previous: C++ &amp; Python 多线程笔记">C++ & Python 多线程笔记</a></li>
+                <li class="next-article"><a href="chukeer.github.io/libevent evhttp学习——http服务端.html" title="Next: libevent evhttp学习——http服务端">libevent evhttp学习——http服务端</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -293,19 +293,19 @@ int event_base_dispatch(struct event_base *);</code></p>
             </tr>
             <tr>
                 <td>Category</td>
-                <td><a class="category-link" href="/categories.html#language-ref">Language</a></td>
+                <td><a class="category-link" href="chukeer.github.io/categories.html#language-ref">Language</a></td>
             </tr>
             <tr>
                 <td>Tags</td>
                 <td>
                     <ul class="list-of-tags tags-in-article">
-                        <li><a href="/tags.html#c-ref">c++
+                        <li><a href="chukeer.github.io/tags.html#c-ref">c++
                             <span>14</span>
 </a></li>
-                        <li><a href="/tags.html#http-ref">http
+                        <li><a href="chukeer.github.io/tags.html#http-ref">http
                             <span>3</span>
 </a></li>
-                        <li><a href="/tags.html#libevent-ref">libevent
+                        <li><a href="chukeer.github.io/tags.html#libevent-ref">libevent
                             <span>2</span>
 </a></li>
                     </ul>
@@ -332,8 +332,8 @@ int event_base_dispatch(struct event_base *);</code></p>
         <script src="http://code.jquery.com/jquery.min.js"></script>
         <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
         -->
-        <script src="/theme/js/jquery.min.js"></script>
-        <script src="/theme/js/bootstrap.min.js"></script>
+        <script src="chukeer.github.io/theme/js/jquery.min.js"></script>
+        <script src="chukeer.github.io/theme/js/bootstrap.min.js"></script>
         <script>
             function validateForm(query)
             {

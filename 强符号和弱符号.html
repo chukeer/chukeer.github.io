@@ -13,7 +13,7 @@
 <meta name="keywords" content="c++, Language, " />
 
 <meta property="og:title" content="强符号和弱符号 "/>
-<meta property="og:url" content="/强符号和弱符号.html" />
+<meta property="og:url" content="chukeer.github.io/强符号和弱符号.html" />
 <meta property="og:description" content="之前在extern “C” 用法详解中已经提到过符号的概念，它是编译器对变量和函数的一种标记，编译器对C和C++代码在生产符号时规则也是不一样的，符号除了本身名字的区别外，还有强符号和弱符号之分 我们先看一段简单的代码 /* test.c */ void hello(); int main() { hello(); return 0; } 很显然，这段代码是没法链接通过的，它会报错undefined reference to hello，说的是hello未定义，因为这里我们只声明了函数hello，而没有定义它。但是我们把代码稍作修改如下 __attribute__((weak)) void hello(); int main() { hello(); return 0; } 这时你会发现，编译链接都可通过，但是运行会报错，因为这时我们将hello声明为了弱符号，在链接时弱符号会被链接器当做0，执行一个地址为0的函数当然会报错，改为如下代码就不会报错了，只是它没有任何输出 __attribute__((weak ..." />
 <meta property="og:site_name" content="LittleWhite" />
 <meta property="og:article:author" content="littlewhite" />
@@ -28,12 +28,12 @@
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
         --!>
-        <link href="/theme/css/bootstrap-combined.min.css" rel="stylesheet">
-        <link href="/theme/css/font-awesome.css" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="/theme/css/pygments.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="/theme/tipuesearch/tipuesearch.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="/theme/css/elegant.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="/theme/css/custom.css" media="screen">
+        <link href="chukeer.github.io/theme/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="chukeer.github.io/theme/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/css/custom.css" media="screen">
     </head>
     <body>
         <div id="content-sans-footer">
@@ -45,14 +45,14 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </a>
-                    <a class="brand" href="/"><span class=site-name>LittleWhite</span></a>
+                    <a class="brand" href="chukeer.github.io/"><span class=site-name>LittleWhite</span></a>
                     <div class="nav-collapse collapse">
                         <ul class="nav pull-right top-menu">
-                            <li ><a href="">Home</a></li>
-                            <li ><a href="/categories.html">Categories</a></li>
-                            <li ><a href="/tags.html">Tags</a></li>
-                            <li ><a href="/archives.html">Archives</a></li>
-                            <li><form class="navbar-search" action="/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            <li ><a href="chukeer.github.io">Home</a></li>
+                            <li ><a href="chukeer.github.io/categories.html">Categories</a></li>
+                            <li ><a href="chukeer.github.io/tags.html">Tags</a></li>
+                            <li ><a href="chukeer.github.io/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="chukeer.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
                         </ul>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
 <article>
 <div class="row-fluid">
     <header class="page-header span10 offset2">
-    <h1><a href="/强符号和弱符号.html"> 强符号和弱符号  </a></h1>
+    <h1><a href="chukeer.github.io/强符号和弱符号.html"> 强符号和弱符号  </a></h1>
     </header>
 </div>
 
@@ -201,8 +201,8 @@ This is multi-thread version!
             <aside>
             <nav>
             <ul class="articles-timeline">
-                <li class="previous-article">« <a href="/Mac必备软件推荐.html" title="Previous: Mac必备软件推荐">Mac必备软件推荐</a></li>
-                <li class="next-article"><a href="/没有main函数的helloworld.html" title="Next: 没有main函数的helloworld">没有main函数的helloworld</a> »</li>
+                <li class="previous-article">« <a href="chukeer.github.io/Mac必备软件推荐.html" title="Previous: Mac必备软件推荐">Mac必备软件推荐</a></li>
+                <li class="next-article"><a href="chukeer.github.io/没有main函数的helloworld.html" title="Next: 没有main函数的helloworld">没有main函数的helloworld</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -217,13 +217,13 @@ This is multi-thread version!
             </tr>
             <tr>
                 <td>Category</td>
-                <td><a class="category-link" href="/categories.html#language-ref">Language</a></td>
+                <td><a class="category-link" href="chukeer.github.io/categories.html#language-ref">Language</a></td>
             </tr>
             <tr>
                 <td>Tags</td>
                 <td>
                     <ul class="list-of-tags tags-in-article">
-                        <li><a href="/tags.html#c-ref">c++
+                        <li><a href="chukeer.github.io/tags.html#c-ref">c++
                             <span>14</span>
 </a></li>
                     </ul>
@@ -250,8 +250,8 @@ This is multi-thread version!
         <script src="http://code.jquery.com/jquery.min.js"></script>
         <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
         -->
-        <script src="/theme/js/jquery.min.js"></script>
-        <script src="/theme/js/bootstrap.min.js"></script>
+        <script src="chukeer.github.io/theme/js/jquery.min.js"></script>
+        <script src="chukeer.github.io/theme/js/bootstrap.min.js"></script>
         <script>
             function validateForm(query)
             {

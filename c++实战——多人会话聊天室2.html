@@ -13,7 +13,7 @@
 <meta name="keywords" content="c++, Language, " />
 
 <meta property="og:title" content="c++实战——多人会话聊天室2 "/>
-<meta property="og:url" content="/c++实战——多人会话聊天室2.html" />
+<meta property="og:url" content="chukeer.github.io/c++实战——多人会话聊天室2.html" />
 <meta property="og:description" content="前面已经讲过一次多人会话聊天室的实现C++实战——多人会话聊天室（一），只不过上一篇是用最简单的方式，服务端每接收一个连接就起一个线程，而且是阻塞模式的，也就是说服务端每次调用accept函数时会一直等待有客户端连接上才会返回。今天介绍一种基于epoll模型的非阻塞方式的实现。 === 阻塞与非阻塞¶ 顾名思义，阻塞就是当你调用一个函数后它会一直等在那里，知道某个信号叫醒它，最典型的例子就是read之类的函数，当你调用时它会等待标准输入，直到你在屏幕上输完敲下回车，它才会继续执行。Linux默认IO都是阻塞模型的 非阻塞就是当你调用函数之后它会立马返回，同样还是拿read举例，它不会阻塞在屏幕上等待你输入，而是立马返回，如果返回错误，那就代表没有数据可读。下面的例子可以大致说明一下差别 #include &lt;unistd.h&gt; #include &lt;stdio.h&gt; #include &lt;fcntl.h&gt; #include &lt;stdlib.h&gt; int main(int argc, char *argv[]) { int res; res = fcntl(0, F_GETFL ..." />
 <meta property="og:site_name" content="LittleWhite" />
 <meta property="og:article:author" content="littlewhite" />
@@ -28,12 +28,12 @@
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
         --!>
-        <link href="/theme/css/bootstrap-combined.min.css" rel="stylesheet">
-        <link href="/theme/css/font-awesome.css" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="/theme/css/pygments.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="/theme/tipuesearch/tipuesearch.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="/theme/css/elegant.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="/theme/css/custom.css" media="screen">
+        <link href="chukeer.github.io/theme/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="chukeer.github.io/theme/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="chukeer.github.io/theme/css/custom.css" media="screen">
     </head>
     <body>
         <div id="content-sans-footer">
@@ -45,14 +45,14 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </a>
-                    <a class="brand" href="/"><span class=site-name>LittleWhite</span></a>
+                    <a class="brand" href="chukeer.github.io/"><span class=site-name>LittleWhite</span></a>
                     <div class="nav-collapse collapse">
                         <ul class="nav pull-right top-menu">
-                            <li ><a href="">Home</a></li>
-                            <li ><a href="/categories.html">Categories</a></li>
-                            <li ><a href="/tags.html">Tags</a></li>
-                            <li ><a href="/archives.html">Archives</a></li>
-                            <li><form class="navbar-search" action="/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            <li ><a href="chukeer.github.io">Home</a></li>
+                            <li ><a href="chukeer.github.io/categories.html">Categories</a></li>
+                            <li ><a href="chukeer.github.io/tags.html">Tags</a></li>
+                            <li ><a href="chukeer.github.io/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="chukeer.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
                         </ul>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
 <article>
 <div class="row-fluid">
     <header class="page-header span10 offset2">
-    <h1><a href="/c++实战——多人会话聊天室2.html"> c++实战——多人会话聊天室2  </a></h1>
+    <h1><a href="chukeer.github.io/c++实战——多人会话聊天室2.html"> c++实战——多人会话聊天室2  </a></h1>
     </header>
 </div>
 
@@ -141,8 +141,8 @@ g++ test.cpp -D NONBLOCK -o test_nonblock
             <aside>
             <nav>
             <ul class="articles-timeline">
-                <li class="previous-article">« <a href="/vpn简介以及国内外分流设置.html" title="Previous: vpn简介以及国内外分流设置">vpn简介以及国内外分流设置</a></li>
-                <li class="next-article"><a href="/glog安装及使用.html" title="Next: glog安装及使用">glog安装及使用</a> »</li>
+                <li class="previous-article">« <a href="chukeer.github.io/vpn简介以及国内外分流设置.html" title="Previous: vpn简介以及国内外分流设置">vpn简介以及国内外分流设置</a></li>
+                <li class="next-article"><a href="chukeer.github.io/glog安装及使用.html" title="Next: glog安装及使用">glog安装及使用</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -157,13 +157,13 @@ g++ test.cpp -D NONBLOCK -o test_nonblock
             </tr>
             <tr>
                 <td>Category</td>
-                <td><a class="category-link" href="/categories.html#language-ref">Language</a></td>
+                <td><a class="category-link" href="chukeer.github.io/categories.html#language-ref">Language</a></td>
             </tr>
             <tr>
                 <td>Tags</td>
                 <td>
                     <ul class="list-of-tags tags-in-article">
-                        <li><a href="/tags.html#c-ref">c++
+                        <li><a href="chukeer.github.io/tags.html#c-ref">c++
                             <span>14</span>
 </a></li>
                     </ul>
@@ -190,8 +190,8 @@ g++ test.cpp -D NONBLOCK -o test_nonblock
         <script src="http://code.jquery.com/jquery.min.js"></script>
         <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
         -->
-        <script src="/theme/js/jquery.min.js"></script>
-        <script src="/theme/js/bootstrap.min.js"></script>
+        <script src="chukeer.github.io/theme/js/jquery.min.js"></script>
+        <script src="chukeer.github.io/theme/js/bootstrap.min.js"></script>
         <script>
             function validateForm(query)
             {
