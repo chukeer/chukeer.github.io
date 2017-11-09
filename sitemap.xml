@@ -5,28 +5,28 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://chukeer.github.io/</loc>
-<lastmod>2017-11-09T22:15:23-00:00</lastmod>
+<lastmod>2017-11-09T22:28:50-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://chukeer.github.io/archives.html</loc>
-<lastmod>2017-11-09T22:15:23-00:00</lastmod>
+<lastmod>2017-11-09T22:28:50-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://chukeer.github.io/tags.html</loc>
-<lastmod>2017-11-09T22:15:23-00:00</lastmod>
+<lastmod>2017-11-09T22:28:50-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://chukeer.github.io/categories.html</loc>
-<lastmod>2017-11-09T22:15:23-00:00</lastmod>
+<lastmod>2017-11-09T22:28:50-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -41,6 +41,34 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>http://chukeer.github.io/cppcheck使用方式详解.html</loc>
 <lastmod>2017-11-09T00:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>http://chukeer.github.io/understand-vim-encoding.html</loc>
+<lastmod>2017-02-22T00:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>http://chukeer.github.io/C++数据库操作之SOCI.html</loc>
+<lastmod>2017-01-22T00:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>http://chukeer.github.io/详解Linux shell命令帮助格式.html</loc>
+<lastmod>2017-01-14T00:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>http://chukeer.github.io/gtest.html</loc>
+<lastmod>2017-01-13T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
