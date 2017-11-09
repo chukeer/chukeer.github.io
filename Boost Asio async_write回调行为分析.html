@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"> 
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="littlewhite" />
+        <meta name="copyright" content="littlewhite" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="boost, Language, " />
+
+<meta property="og:title" content="Boost Asio async_write回调行为分析 "/>
+<meta property="og:url" content="/Boost Asio async_write回调行为分析.html" />
+<meta property="og:description" content="Boost Asio async_write回调行为分析¶ 本文主要分析async_write在一些边界情况下的回调行为，包括如下几点 对方接受缓慢 对方正常关闭 对方异常关闭 主动shutdown_receive 主动shutdown_send 主动shutdown_both 先给出结论 正常情况下async_write将数据写入socket发送缓冲区就会触发回调 在以下情况下async_write回调也会被触发，并携带相应错误码：对方关闭（close, kill, kill -9)，主动shutdown_send，主动shutdown_both 基本知识¶ 每个tcp socket在内核都有发送缓冲区和接收缓冲区，发送函数send只是将数据写入发送缓冲区，接受函数recv是将数据从接收缓冲区拷贝到应用层，当接收缓冲区已满时，收端会通知发端接收窗口关闭（win=0)。真正的tcp发送是由内核协议来完成的，即便发送进程退出，只要发送缓冲区还有数据，对方仍旧能收到这部分数据 async_write底层调用的async_write_some，可能会分多次调用，最终的发送也是将数据写入发送缓冲区，只有当async_write的所有数据都写入缓冲区，async_write的回调才会被调用 发送缓冲区写满的回调分析¶ 我们设计这样一种场景，当客户端连接上之后，服务端即调用async_write向其发送数据，并且在回调函数里继续调用async_write，观察回调情况，流程如下 每次async_write发送10K数据，并且客户端连接上来之后不调用recv，模拟接受缓慢的场景 ..." />
+<meta property="og:site_name" content="LittleWhite" />
+<meta property="og:article:author" content="littlewhite" />
+<meta property="og:article:published_time" content="2017-11-09T00:00:00+08:00" />
+<meta property="" content="2017-11-09T00:00:00+08:00" />
+<meta name="twitter:title" content="Boost Asio async_write回调行为分析 ">
+<meta name="twitter:description" content="Boost Asio async_write回调行为分析¶ 本文主要分析async_write在一些边界情况下的回调行为，包括如下几点 对方接受缓慢 对方正常关闭 对方异常关闭 主动shutdown_receive 主动shutdown_send 主动shutdown_both 先给出结论 正常情况下async_write将数据写入socket发送缓冲区就会触发回调 在以下情况下async_write回调也会被触发，并携带相应错误码：对方关闭（close, kill, kill -9)，主动shutdown_send，主动shutdown_both 基本知识¶ 每个tcp socket在内核都有发送缓冲区和接收缓冲区，发送函数send只是将数据写入发送缓冲区，接受函数recv是将数据从接收缓冲区拷贝到应用层，当接收缓冲区已满时，收端会通知发端接收窗口关闭（win=0)。真正的tcp发送是由内核协议来完成的，即便发送进程退出，只要发送缓冲区还有数据，对方仍旧能收到这部分数据 async_write底层调用的async_write_some，可能会分多次调用，最终的发送也是将数据写入发送缓冲区，只有当async_write的所有数据都写入缓冲区，async_write的回调才会被调用 发送缓冲区写满的回调分析¶ 我们设计这样一种场景，当客户端连接上之后，服务端即调用async_write向其发送数据，并且在回调函数里继续调用async_write，观察回调情况，流程如下 每次async_write发送10K数据，并且客户端连接上来之后不调用recv，模拟接受缓慢的场景 ...">
+
+        <title>Boost Asio async_write回调行为分析  · LittleWhite
+</title>
+        <!-- 
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
+        --!>
+        <link href="/theme/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/custom.css" media="screen">
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container-fluid">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="/"><span class=site-name>LittleWhite</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href="">Home</a></li>
+                            <li ><a href="/categories.html">Categories</a></li>
+                            <li ><a href="/tags.html">Tags</a></li>
+                            <li ><a href="/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<article>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+    <h1><a href="/Boost Asio async_write回调行为分析.html"> Boost Asio async_write回调行为分析  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+    <div class="span2 table-of-content">
+        <nav>
+        <h4>Contents</h4>
+        <div class="toc">
+<ul>
+<li><a href="#boost-asio-async_write">Boost Asio async_write回调行为分析</a><ul>
+<li><a href="#_1">基本知识</a></li>
+<li><a href="#_2">发送缓冲区写满的回调分析</a></li>
+<li><a href="#socket">socket关闭的回调分析</a><ul>
+<li><a href="#closekillkill-9">对端关闭（close，kill，kill -9）</a></li>
+<li><a href="#_3">本端关闭</a></li>
+</ul>
+</li>
+<li><a href="#_4">结论</a></li>
+<li><a href="#_5">完整服务端测试代码</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </nav>
+    </div>
+    <div class="span8 article-content">
+            
+            
+<h1 id="boost-asio-async_write">Boost Asio async_write回调行为分析<a class="headerlink" href="#boost-asio-async_write" title="Permanent link">¶</a></h1>
+<p>本文主要分析async_write在一些边界情况下的回调行为，包括如下几点</p>
+<ol>
+<li>对方接受缓慢</li>
+<li>对方正常关闭</li>
+<li>对方异常关闭</li>
+<li>主动shutdown_receive</li>
+<li>主动shutdown_send</li>
+<li>主动shutdown_both</li>
+</ol>
+<p>先给出结论</p>
+<blockquote>
+<p>正常情况下async_write将数据写入socket发送缓冲区就会触发回调<br/>
+在以下情况下async_write回调也会被触发，并携带相应错误码：对方关闭（close, kill, kill -9)，主动shutdown_send，主动shutdown_both</p>
+</blockquote>
+<h2 id="_1">基本知识<a class="headerlink" href="#_1" title="Permanent link">¶</a></h2>
+<p>每个tcp socket在内核都有发送缓冲区和接收缓冲区，发送函数send只是将数据写入发送缓冲区，接受函数recv是将数据从接收缓冲区拷贝到应用层，当接收缓冲区已满时，收端会通知发端接收窗口关闭（win=0)。真正的tcp发送是由内核协议来完成的，即便发送进程退出，只要发送缓冲区还有数据，对方仍旧能收到这部分数据</p>
+<p>async_write底层调用的async_write_some，可能会分多次调用，最终的发送也是将数据写入发送缓冲区，只有当async_write的所有数据都写入缓冲区，async_write的回调才会被调用</p>
+<h2 id="_2">发送缓冲区写满的回调分析<a class="headerlink" href="#_2" title="Permanent link">¶</a></h2>
+<p>我们设计这样一种场景，当客户端连接上之后，服务端即调用async_write向其发送数据，并且在回调函数里继续调用async_write，观察回调情况，流程如下</p>
+<p><img alt="" src="http://littlewhite.us/pic/async_write.png"/></p>
+<p>每次async_write发送10K数据，并且客户端连接上来之后不调用recv，模拟接受缓慢的场景，观察on_write调用次数，关键代码如下</p>
+<div class="highlight"><pre><span></span><span class="nt">int</span> <span class="nt">g_write_count</span> <span class="o">=</span> <span class="nt">1000</span><span class="o">;</span>                                                                                                                                                                                           
+<span class="nt">int</span> <span class="nt">g_write_size</span> <span class="o">=</span> <span class="nt">1024</span> <span class="o">*</span> <span class="nt">10</span><span class="o">;</span>                                                                                                                                                                                       
+<span class="nt">int</span> <span class="nt">g_index</span> <span class="o">=</span> <span class="nt">0</span><span class="o">;</span>
+
+<span class="nt">void</span> <span class="nt">on_write</span><span class="o">(</span><span class="nt">Context</span><span class="o">*</span> <span class="nt">context</span><span class="o">,</span> <span class="nt">const</span> <span class="nt">boost</span><span class="o">:</span><span class="nd">:system</span><span class="o">:</span><span class="nd">:error_code</span> <span class="o">&amp;</span><span class="nt">err</span><span class="o">,</span> <span class="nt">std</span><span class="o">:</span><span class="nd">:size_t</span> <span class="nt">bytes</span><span class="o">)</span>                                                                                                                            
+<span class="p">{</span>                                                                                                                                                                                                                   
+    <span class="n">if</span> <span class="p">(</span><span class="n">err</span><span class="p">)</span>                                                                                                                                                                                                        
+    <span class="err">{</span>                                                                                                                                                                                                               
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s2">"on_write, err:"</span> <span class="o">&lt;&lt;</span> <span class="n">err</span><span class="o">.</span><span class="n">message</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>                                                                                                                                                          
+        <span class="n">context</span><span class="o">-&gt;</span><span class="n">socket</span><span class="o">-&gt;</span><span class="n">close</span><span class="p">();</span>                                                                                                                                                                                   
+        <span class="n">delete</span> <span class="n">context</span><span class="o">-&gt;</span><span class="n">socket</span><span class="p">;</span>
+        <span class="n">context</span><span class="o">-&gt;</span><span class="n">socket</span> <span class="o">=</span> <span class="n">NULL</span><span class="p">;</span>                                                                                                                                                                                     
+        <span class="n">delete</span> <span class="n">context</span><span class="p">;</span>                                                                                                                                                                                             
+        <span class="n">return</span> <span class="p">;</span>                                                                                                                                                                                                    
+    <span class="p">}</span>
+
+    <span class="nt">static</span> <span class="nt">int</span> <span class="nt">count</span> <span class="o">=</span> <span class="nt">0</span><span class="o">;</span>                                                                                                                                                                                           
+    <span class="nt">cout</span> <span class="o">&lt;&lt;</span> <span class="s2">"on_write bytes:"</span> <span class="o">&lt;&lt;</span> <span class="nt">bytes</span> <span class="o">&lt;&lt;</span> <span class="s2">" time:"</span> <span class="o">&lt;&lt;</span> <span class="nt">time</span><span class="o">(</span><span class="nt">NULL</span><span class="o">)</span> <span class="o">&lt;&lt;</span> <span class="s2">" count:"</span> <span class="o">&lt;&lt;</span> <span class="o">++</span><span class="nt">count</span> <span class="o">&lt;&lt;</span> <span class="nt">endl</span><span class="o">;</span>
+
+    <span class="nt">if</span> <span class="o">(</span><span class="nt">g_index</span> <span class="o">&lt;</span> <span class="nt">g_write_count</span><span class="o">)</span>                                                                                                                                                                                    
+    <span class="p">{</span>                                                                                                                                                                                                               
+        <span class="n">context</span><span class="o">-&gt;</span><span class="n">write_buf</span> <span class="o">=</span> <span class="p">(</span><span class="n">char</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">g_write_size</span><span class="p">);</span>                                                                                                                                                           
+        <span class="n">memset</span><span class="p">(</span><span class="n">context</span><span class="o">-&gt;</span><span class="n">write_buf</span><span class="o">,</span> <span class="s1">'a'</span><span class="o">,</span> <span class="n">g_write_size</span><span class="p">);</span>
+
+        <span class="n">async_write</span><span class="p">(</span><span class="o">*</span><span class="n">context</span><span class="o">-&gt;</span><span class="n">socket</span><span class="o">,</span> <span class="n">buffer</span><span class="p">(</span><span class="n">context</span><span class="o">-&gt;</span><span class="n">write_buf</span><span class="o">,</span> <span class="n">g_write_size</span><span class="p">)</span><span class="o">,</span> <span class="n">boost</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="o">&amp;</span><span class="n">on_write</span><span class="o">,</span> <span class="n">context</span><span class="o">,</span> <span class="n">placeholders</span><span class="o">::</span><span class="n">error</span><span class="o">,</span> <span class="n">placeholders</span><span class="o">::</span><span class="n">bytes_transferred</span><span class="p">));</span>                                             
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s2">"async_write, index:"</span> <span class="o">&lt;&lt;</span> <span class="o">++</span><span class="n">g_index</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+
+        <span class="n">delete</span> <span class="n">context</span><span class="o">-&gt;</span><span class="n">write_buf</span><span class="p">;</span>                                                                                                                                                                                  
+        <span class="n">context</span><span class="o">-&gt;</span><span class="n">write_buf</span> <span class="o">=</span> <span class="n">NULL</span><span class="p">;</span>                                                                                                                                                                                  
+    <span class="p">}</span>                                                                                                                                                                                                               
+<span class="err">}</span>
+</pre></div>
+<p>客户端是用Python解释器进行交互式操作，便于分析每一步的结果</p>
+<p>测试步骤为</p>
+<ol>
+<li>启动服务端</li>
+<li>Python客户端连接服务端</li>
+<li>退出服务端</li>
+<li>Python客户端继续读取数据</li>
+</ol>
+<p>在这个过程中同时进行抓包分析，我们发现</p>
+<p><strong>客户端连接上来之后（即步骤2完成之后）服务端一共调用了142次回调，第143次async_write的回调并没有调用</strong></p>
+<p><img alt="" src="http://littlewhite.us/pic/async_write1.1.png"/></p>
+<p><strong>此时客户端的接收缓冲区已满（注意观察两图的时间戳）</strong></p>
+<p><img alt="" src="http://littlewhite.us/pic/async_write1.3.png"/></p>
+<p><strong>服务端退出之后客户端仍旧能读到数据，并且读到的数据包（这里以10K作为一个数据包）数量正好介于142和143之间</strong></p>
+<p><img alt="" src="http://littlewhite.us/pic/async_write1.2.png"/></p>
+<p>结合前面的基础知识分析这个过程如下</p>
+<ol>
+<li>客户端连接上来之后服务端开始调用async_write，当数据被写入发送缓冲区时回调函数即被调用</li>
+<li>内核协议将发送缓冲区数据发送给客户端，写入接收缓冲区，直到对方接收缓冲区写满，这个过程中步骤1一直在执行（一共执行了142次）</li>
+<li>当服务端调用第143次async_write时，由于发送缓冲区空间不够，因此回调没有发生，但仍旧写入了一部分数据</li>
+<li>服务端退出后客户端读取接受缓冲区数据，同时内核将发送缓冲区数据发送给客户端，这个数据量为前142次async_write写入的全部数据加第143次async_write写入的部分数据</li>
+</ol>
+<p>倘若服务端不退出，当客户端读取一部分数据后，第143次async_write的回调即会发生，这里就不贴出相应数据了</p>
+<p>从以上分析可以看出，当数据写入发送缓冲区后async_write的回调即会发生，如果发送缓冲区已满，async_write的回调不会发生</p>
+<h2 id="socket">socket关闭的回调分析<a class="headerlink" href="#socket" title="Permanent link">¶</a></h2>
+<p>还是使用前面的服务端和客户端程序，测试场景如下</p>
+<ol>
+<li>启动服务端</li>
+<li>Python客户端连接上服务端，服务端调用一次async_write sleep 15秒钟，让客户端有充足的时间执行操作</li>
+<li>客户端分别在不读取缓冲区和读完缓冲区的两种情况下执行close, kill, kill -9，并抓包进行分析</li>
+<li>对服务端通过发送kill -15的信号执行shutdown_send, shutdown_receive, shutdown_both，分析回调行为</li>
+</ol>
+<p>服务端通过捕捉信号执行shutdown操作如下</p>
+<div class="highlight"><pre><span></span><span class="nt">void</span> <span class="nt">SignalHandler</span><span class="o">(</span> <span class="nt">int</span> <span class="nt">signum</span>  <span class="o">)</span>                                                                                                                                                                                   
+<span class="p">{</span>                                                                                                                                                                                                                   
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s2">"Interrupt signal ("</span> <span class="o">&lt;&lt;</span> <span class="n">signum</span> <span class="o">&lt;&lt;</span> <span class="s2">") received"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+
+    <span class="n">boost</span><span class="o">::</span><span class="n">system</span><span class="o">::</span><span class="n">error_code</span> <span class="n">ec</span><span class="p">;</span>                                                                                                                                                                                   
+    <span class="n">g_socket</span><span class="o">-&gt;</span><span class="n">shutdown</span><span class="p">(</span><span class="n">boost</span><span class="o">::</span><span class="n">asio</span><span class="o">::</span><span class="n">ip</span><span class="o">::</span><span class="n">tcp</span><span class="o">::</span><span class="n">socket</span><span class="o">::</span><span class="n">shutdown_send</span><span class="o">,</span> <span class="n">ec</span><span class="p">);</span>                                                                                                                                            
+    <span class="o">//</span><span class="n">g_socket</span><span class="o">-&gt;</span><span class="n">shutdown</span><span class="p">(</span><span class="n">boost</span><span class="o">::</span><span class="n">asio</span><span class="o">::</span><span class="n">ip</span><span class="o">::</span><span class="n">tcp</span><span class="o">::</span><span class="n">socket</span><span class="o">::</span><span class="n">shutdown_receive</span><span class="o">,</span> <span class="n">ec</span><span class="p">);</span>                                                                                                                                       
+    <span class="o">//</span><span class="n">g_socket</span><span class="o">-&gt;</span><span class="n">shutdown</span><span class="p">(</span><span class="n">boost</span><span class="o">::</span><span class="n">asio</span><span class="o">::</span><span class="n">ip</span><span class="o">::</span><span class="n">tcp</span><span class="o">::</span><span class="n">socket</span><span class="o">::</span><span class="n">shutdown_both</span><span class="o">,</span> <span class="n">ec</span><span class="p">);</span>                                                                                                                                          
+<span class="p">}</span>
+</pre></div>
+<h3 id="closekillkill-9">对端关闭（close，kill，kill -9）<a class="headerlink" href="#closekillkill-9" title="Permanent link">¶</a></h3>
+<p>如果对端接收缓冲区还有数据，关闭（close,kill, kill -9）会导致对端发送RST包，如下最后一行，此时本端调用async_write回立马产生回调，err参数为Connection reset by peer</p>
+<div class="highlight"><pre><span></span><span class="mi">23</span><span class="o">:</span><span class="mi">37</span><span class="o">:</span><span class="mf">36.235495</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50366</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[</span><span class="n">S</span><span class="o">],</span> <span class="n">seq</span> <span class="mi">1891887111</span><span class="o">,</span> <span class="n">win</span> <span class="mi">43690</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">mss</span> <span class="mi">65495</span><span class="o">,</span><span class="n">sackOK</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">656034598</span> <span class="n">ecr</span> <span class="mi">0</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">wscale</span> <span class="mi">7</span><span class="o">],</span> <span class="n">length</span> <span class="mi">0</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">37</span><span class="o">:</span><span class="mf">36.235504</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50366</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[</span><span class="n">S</span><span class="o">.],</span> <span class="n">seq</span> <span class="mi">53115564</span><span class="o">,</span> <span class="n">ack</span> <span class="mi">1891887112</span><span class="o">,</span> <span class="n">win</span> <span class="mi">43690</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">mss</span> <span class="mi">65495</span><span class="o">,</span><span class="n">sackOK</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">656034598</span> <span class="n">ecr</span> <span class="mi">656034598</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">wscale</span> <span class="mi">7</span><span class="o">],</span> <span class="n">length</span> <span class="mi">0</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">37</span><span class="o">:</span><span class="mf">36.235514</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50366</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[.],</span> <span class="n">ack</span> <span class="mi">1</span><span class="o">,</span> <span class="n">win</span> <span class="mi">342</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">nop</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">656034598</span> <span class="n">ecr</span> <span class="mi">656034598</span><span class="o">],</span> <span class="n">length</span> <span class="mi">0</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">37</span><span class="o">:</span><span class="mf">36.235749</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50366</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[</span><span class="n">P</span><span class="o">.],</span> <span class="n">seq</span> <span class="mi">1</span><span class="o">:</span><span class="mi">10241</span><span class="o">,</span> <span class="n">ack</span> <span class="mi">1</span><span class="o">,</span> <span class="n">win</span> <span class="mi">342</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">nop</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">656034598</span> <span class="n">ecr</span> <span class="mi">656034598</span><span class="o">],</span> <span class="n">length</span> <span class="mi">10240</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">37</span><span class="o">:</span><span class="mf">36.235757</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50366</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[.],</span> <span class="n">ack</span> <span class="mi">10241</span><span class="o">,</span> <span class="n">win</span> <span class="mi">1365</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">nop</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">656034598</span> <span class="n">ecr</span> <span class="mi">656034598</span><span class="o">],</span> <span class="n">length</span> <span class="mi">0</span>
+<span class="o">****</span> <span class="n">close</span><span class="sr">/kill/</span><span class="n">kill</span> <span class="o">-</span><span class="mi">9</span> <span class="n">at</span> <span class="k">this</span> <span class="n">moment</span> <span class="o">****</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">37</span><span class="o">:</span><span class="mf">39.011643</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50366</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[</span><span class="n">R</span><span class="o">.],</span> <span class="n">seq</span> <span class="mi">1</span><span class="o">,</span> <span class="n">ack</span> <span class="mi">10241</span><span class="o">,</span> <span class="n">win</span> <span class="mi">1365</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">nop</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">0</span> <span class="n">ecr</span> <span class="mi">656034598</span><span class="o">],</span> <span class="n">length</span> <span class="mi">0</span>
+</pre></div>
+<p>如果对端接受缓冲区没有数据，通过close关闭或者被进程被kill，会发送FIN包，此时本端调用async_write会收到正常回调，但对端回的是RST包，当下次调用async_write时产生错误回调，err为Broken pipe</p>
+<div class="highlight"><pre><span></span><span class="mi">23</span><span class="o">:</span><span class="mi">46</span><span class="o">:</span><span class="mf">13.105899</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50369</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[</span><span class="n">S</span><span class="o">],</span> <span class="n">seq</span> <span class="mi">94591470</span><span class="o">,</span> <span class="n">win</span> <span class="mi">43690</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">mss</span> <span class="mi">65495</span><span class="o">,</span><span class="n">sackOK</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">656163816</span> <span class="n">ecr</span> <span class="mi">0</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">wscale</span> <span class="mi">7</span><span class="o">],</span> <span class="n">length</span> <span class="mi">0</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">46</span><span class="o">:</span><span class="mf">13.105909</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50369</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[</span><span class="n">S</span><span class="o">.],</span> <span class="n">seq</span> <span class="mi">1590802765</span><span class="o">,</span> <span class="n">ack</span> <span class="mi">94591471</span><span class="o">,</span> <span class="n">win</span> <span class="mi">43690</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">mss</span> <span class="mi">65495</span><span class="o">,</span><span class="n">sackOK</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">656163816</span> <span class="n">ecr</span> <span class="mi">656163816</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">wscale</span> <span class="mi">7</span><span class="o">],</span> <span class="n">length</span> <span class="mi">0</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">46</span><span class="o">:</span><span class="mf">13.105922</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50369</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[.],</span> <span class="n">ack</span> <span class="mi">1</span><span class="o">,</span> <span class="n">win</span> <span class="mi">342</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">nop</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">656163816</span> <span class="n">ecr</span> <span class="mi">656163816</span><span class="o">],</span> <span class="n">length</span> <span class="mi">0</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">46</span><span class="o">:</span><span class="mf">13.106132</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50369</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[</span><span class="n">P</span><span class="o">.],</span> <span class="n">seq</span> <span class="mi">1</span><span class="o">:</span><span class="mi">10241</span><span class="o">,</span> <span class="n">ack</span> <span class="mi">1</span><span class="o">,</span> <span class="n">win</span> <span class="mi">342</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">nop</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">656163816</span> <span class="n">ecr</span> <span class="mi">656163816</span><span class="o">],</span> <span class="n">length</span> <span class="mi">10240</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">46</span><span class="o">:</span><span class="mf">13.106139</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50369</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[.],</span> <span class="n">ack</span> <span class="mi">10241</span><span class="o">,</span> <span class="n">win</span> <span class="mi">1365</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">nop</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">656163816</span> <span class="n">ecr</span> <span class="mi">656163816</span><span class="o">],</span> <span class="n">length</span> <span class="mi">0</span>
+<span class="o">****</span> <span class="n">close</span><span class="o">/</span><span class="n">kill</span> <span class="n">at</span> <span class="k">this</span> <span class="n">moment</span> <span class="o">***</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">46</span><span class="o">:</span><span class="mf">19.929814</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50369</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[</span><span class="n">F</span><span class="o">.],</span> <span class="n">seq</span> <span class="mi">1</span><span class="o">,</span> <span class="n">ack</span> <span class="mi">10241</span><span class="o">,</span> <span class="n">win</span> <span class="mi">1365</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">nop</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">656165522</span> <span class="n">ecr</span> <span class="mi">656163816</span><span class="o">],</span> <span class="n">length</span> <span class="mi">0</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">46</span><span class="o">:</span><span class="mf">19.933364</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50369</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[.],</span> <span class="n">ack</span> <span class="mi">2</span><span class="o">,</span> <span class="n">win</span> <span class="mi">342</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">nop</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">656165523</span> <span class="n">ecr</span> <span class="mi">656165522</span><span class="o">],</span> <span class="n">length</span> <span class="mi">0</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">46</span><span class="o">:</span><span class="mf">23.106636</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50369</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[</span><span class="n">P</span><span class="o">.],</span> <span class="n">seq</span> <span class="mi">10241</span><span class="o">:</span><span class="mi">20481</span><span class="o">,</span> <span class="n">ack</span> <span class="mi">2</span><span class="o">,</span> <span class="n">win</span> <span class="mi">342</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">nop</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">656166316</span> <span class="n">ecr</span> <span class="mi">656165522</span><span class="o">],</span> <span class="n">length</span> <span class="mi">10240</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">46</span><span class="o">:</span><span class="mf">23.106658</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50369</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[</span><span class="n">R</span><span class="o">],</span> <span class="n">seq</span> <span class="mi">94591472</span><span class="o">,</span> <span class="n">win</span> <span class="mi">0</span><span class="o">,</span> <span class="n">length</span> <span class="mi">0</span>
+</pre></div>
+<p>如果对端接收缓冲区没有数据，并且进程是被kill -9杀掉，则会发送RST包，和缓冲区有数据时退出一样，此时本端调用async_write会产生错误回调，err为Connection reset by peer，过程如下</p>
+<div class="highlight"><pre><span></span><span class="mi">23</span><span class="o">:</span><span class="mi">53</span><span class="o">:</span><span class="mf">39.531436</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50372</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[</span><span class="n">S</span><span class="o">],</span> <span class="n">seq</span> <span class="mi">1739017762</span><span class="o">,</span> <span class="n">win</span> <span class="mi">43690</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">mss</span> <span class="mi">65495</span><span class="o">,</span><span class="n">sackOK</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">656275422</span> <span class="n">ecr</span> <span class="mi">0</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">wscale</span> <span class="mi">7</span><span class="o">],</span> <span class="n">length</span> <span class="mi">0</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">53</span><span class="o">:</span><span class="mf">39.531449</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50372</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[</span><span class="n">S</span><span class="o">.],</span> <span class="n">seq</span> <span class="mi">2103076725</span><span class="o">,</span> <span class="n">ack</span> <span class="mi">1739017763</span><span class="o">,</span> <span class="n">win</span> <span class="mi">43690</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">mss</span> <span class="mi">65495</span><span class="o">,</span><span class="n">sackOK</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">656275422</span> <span class="n">ecr</span> <span class="mi">656275422</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">wscale</span> <span class="mi">7</span><span class="o">],</span> <span class="n">length</span> <span class="mi">0</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">53</span><span class="o">:</span><span class="mf">39.531464</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50372</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[.],</span> <span class="n">ack</span> <span class="mi">1</span><span class="o">,</span> <span class="n">win</span> <span class="mi">342</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">nop</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">656275422</span> <span class="n">ecr</span> <span class="mi">656275422</span><span class="o">],</span> <span class="n">length</span> <span class="mi">0</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">53</span><span class="o">:</span><span class="mf">39.531672</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50372</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[</span><span class="n">P</span><span class="o">.],</span> <span class="n">seq</span> <span class="mi">1</span><span class="o">:</span><span class="mi">10241</span><span class="o">,</span> <span class="n">ack</span> <span class="mi">1</span><span class="o">,</span> <span class="n">win</span> <span class="mi">342</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">nop</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">656275422</span> <span class="n">ecr</span> <span class="mi">656275422</span><span class="o">],</span> <span class="n">length</span> <span class="mi">10240</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">53</span><span class="o">:</span><span class="mf">39.531680</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50372</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[.],</span> <span class="n">ack</span> <span class="mi">10241</span><span class="o">,</span> <span class="n">win</span> <span class="mi">1365</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">nop</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">656275422</span> <span class="n">ecr</span> <span class="mi">656275422</span><span class="o">],</span> <span class="n">length</span> <span class="mi">0</span>
+<span class="o">****</span> <span class="n">kill</span> <span class="o">-</span><span class="mi">9</span> <span class="n">at</span> <span class="k">this</span> <span class="n">moment</span> <span class="o">****</span>
+<span class="mi">23</span><span class="o">:</span><span class="mi">53</span><span class="o">:</span><span class="mf">42.420885</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50372</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[</span><span class="n">R</span><span class="o">.],</span> <span class="n">seq</span> <span class="mi">1</span><span class="o">,</span> <span class="n">ack</span> <span class="mi">10241</span><span class="o">,</span> <span class="n">win</span> <span class="mi">1365</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">nop</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">0</span> <span class="n">ecr</span> <span class="mi">656275422</span><span class="o">],</span> <span class="n">length</span> <span class="mi">0</span>
+</pre></div>
+<h3 id="_3">本端关闭<a class="headerlink" href="#_3" title="Permanent link">¶</a></h3>
+<p>本端通过shutdown_send关闭，本端会发送FIN包，调用async_write会产生错误回调，err为Broken pipe</p>
+<div class="highlight"><pre><span></span><span class="mi">00</span><span class="o">:</span><span class="mi">01</span><span class="o">:</span><span class="mf">00.243682</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50383</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[</span><span class="n">S</span><span class="o">],</span> <span class="n">seq</span> <span class="mi">859261593</span><span class="o">,</span> <span class="n">win</span> <span class="mi">43690</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">mss</span> <span class="mi">65495</span><span class="o">,</span><span class="n">sackOK</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">656385600</span> <span class="n">ecr</span> <span class="mi">0</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">wscale</span> <span class="mi">7</span><span class="o">],</span> <span class="n">length</span> <span class="mi">0</span>
+<span class="mi">00</span><span class="o">:</span><span class="mi">01</span><span class="o">:</span><span class="mf">00.243693</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50383</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[</span><span class="n">S</span><span class="o">.],</span> <span class="n">seq</span> <span class="mi">2783724350</span><span class="o">,</span> <span class="n">ack</span> <span class="mi">859261594</span><span class="o">,</span> <span class="n">win</span> <span class="mi">43690</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">mss</span> <span class="mi">65495</span><span class="o">,</span><span class="n">sackOK</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">656385600</span> <span class="n">ecr</span> <span class="mi">656385600</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">wscale</span> <span class="mi">7</span><span class="o">],</span> <span class="n">length</span> <span class="mi">0</span>
+<span class="mi">00</span><span class="o">:</span><span class="mi">01</span><span class="o">:</span><span class="mf">00.243707</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50383</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[.],</span> <span class="n">ack</span> <span class="mi">1</span><span class="o">,</span> <span class="n">win</span> <span class="mi">342</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">nop</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">656385600</span> <span class="n">ecr</span> <span class="mi">656385600</span><span class="o">],</span> <span class="n">length</span> <span class="mi">0</span>
+<span class="mi">00</span><span class="o">:</span><span class="mi">01</span><span class="o">:</span><span class="mf">00.244063</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50383</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[</span><span class="n">P</span><span class="o">.],</span> <span class="n">seq</span> <span class="mi">1</span><span class="o">:</span><span class="mi">10241</span><span class="o">,</span> <span class="n">ack</span> <span class="mi">1</span><span class="o">,</span> <span class="n">win</span> <span class="mi">342</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">nop</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">656385600</span> <span class="n">ecr</span> <span class="mi">656385600</span><span class="o">],</span> <span class="n">length</span> <span class="mi">10240</span>
+<span class="mi">00</span><span class="o">:</span><span class="mi">01</span><span class="o">:</span><span class="mf">00.244074</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50383</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[.],</span> <span class="n">ack</span> <span class="mi">10241</span><span class="o">,</span> <span class="n">win</span> <span class="mi">1365</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">nop</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">656385600</span> <span class="n">ecr</span> <span class="mi">656385600</span><span class="o">],</span> <span class="n">length</span> <span class="mi">0</span>
+<span class="o">****</span> <span class="n">shutdown</span> <span class="n">at</span> <span class="k">this</span> <span class="n">moment</span> <span class="o">****</span>
+<span class="mi">00</span><span class="o">:</span><span class="mi">01</span><span class="o">:</span><span class="mf">02.275905</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50383</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[</span><span class="n">F</span><span class="o">.],</span> <span class="n">seq</span> <span class="mi">10241</span><span class="o">,</span> <span class="n">ack</span> <span class="mi">1</span><span class="o">,</span> <span class="n">win</span> <span class="mi">342</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">nop</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">656386108</span> <span class="n">ecr</span> <span class="mi">656385600</span><span class="o">],</span> <span class="n">length</span> <span class="mi">0</span>
+<span class="mi">00</span><span class="o">:</span><span class="mi">01</span><span class="o">:</span><span class="mf">02.313533</span> <span class="n">IP</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">50383</span> <span class="o">&gt;</span> <span class="n">localhost</span><span class="o">.</span><span class="mi">9999</span><span class="o">:</span> <span class="n">Flags</span> <span class="o">[.],</span> <span class="n">ack</span> <span class="mi">10242</span><span class="o">,</span> <span class="n">win</span> <span class="mi">1365</span><span class="o">,</span> <span class="n">options</span> <span class="o">[</span><span class="n">nop</span><span class="o">,</span><span class="n">nop</span><span class="o">,</span><span class="n">TS</span> <span class="n">val</span> <span class="mi">656386118</span> <span class="n">ecr</span> <span class="mi">656386108</span><span class="o">],</span> <span class="n">length</span> <span class="mi">0</span>
+</pre></div>
+<p>本端调用shutdown_both，结果同shutdown_send<br/>
+本端调用shutdown_receive，对async_write回调没有影响</p>
+<h2 id="_4">结论<a class="headerlink" href="#_4" title="Permanent link">¶</a></h2>
+<p>综上可以看出，async_write的回调行为和连接是否正常以及连接关闭时收到的是RST包还是FIN包有关，总结如下</p>
+<table>
+<thead>
+<tr>
+<th align="left">连接状态</th>
+<th>对端接受缓冲区是否有数据</th>
+<th>async_write回调行为</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">正常</td>
+<td>--</td>
+<td>写入缓冲区即回调，若缓冲区已满，暂时不会回调，会等到缓冲区可以写入之后才回调</td>
+</tr>
+<tr>
+<td align="left">对端关闭（close, kill, kill -9）</td>
+<td>是</td>
+<td>本端收到RST包，下次async_write产生错误回调，err为Connection reset by peer</td>
+</tr>
+<tr>
+<td align="left">对端关闭（close, kill）</td>
+<td>否</td>
+<td>本端收到FIN包，下次async_write正常回调并收到RST包（没有收到ACK包），再次err为Broken pipe</td>
+</tr>
+<tr>
+<td align="left">对端关闭（kill -9）</td>
+<td>否</td>
+<td>本端收到RST包，下次async_write产生错误回调，err为Connection reset by peer</td>
+</tr>
+<tr>
+<td align="left">本端shutdown_send,shutdown_both</td>
+<td>--</td>
+<td>下次async_write产生错误回调，err为Broken pipe</td>
+</tr>
+<tr>
+<td align="left">本端shutdown_receive</td>
+<td>--</td>
+<td>对async_write没有影响</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_5">完整服务端测试代码<a class="headerlink" href="#_5" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;signal.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;string&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">"boost/asio.hpp"</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">"boost/bind.hpp"</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">"boost/thread.hpp"</span><span class="cp"></span>
+
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">boost</span><span class="o">::</span><span class="n">asio</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="n">g_write_count</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">g_write_size</span> <span class="o">=</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">10</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">g_index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="n">ip</span><span class="o">::</span><span class="n">tcp</span><span class="o">::</span><span class="n">socket</span><span class="o">*</span> <span class="n">g_socket</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+
+<span class="k">struct</span> <span class="n">Context</span>
+<span class="p">{</span>
+    <span class="n">Context</span><span class="p">(</span><span class="n">ip</span><span class="o">::</span><span class="n">tcp</span><span class="o">::</span><span class="n">socket</span><span class="o">*</span> <span class="n">s</span><span class="p">,</span> <span class="n">io_service</span><span class="o">*</span> <span class="n">service</span><span class="p">,</span> <span class="n">ip</span><span class="o">::</span><span class="n">tcp</span><span class="o">::</span><span class="n">acceptor</span><span class="o">*</span> <span class="n">a</span><span class="p">)</span> <span class="o">:</span> <span class="n">socket</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">io</span><span class="p">(</span><span class="n">service</span><span class="p">),</span> <span class="n">acceptor</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="p">{</span>
+
+    <span class="p">}</span>
+
+    <span class="n">ip</span><span class="o">::</span><span class="n">tcp</span><span class="o">::</span><span class="n">socket</span><span class="o">*</span> <span class="n">socket</span><span class="p">;</span>
+    <span class="n">ip</span><span class="o">::</span><span class="n">tcp</span><span class="o">::</span><span class="n">acceptor</span><span class="o">*</span> <span class="n">acceptor</span><span class="p">;</span>
+    <span class="n">io_service</span><span class="o">*</span> <span class="n">io</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">read_buf</span><span class="p">[</span><span class="mi">1024</span><span class="p">];</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">write_buf</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="kt">void</span> <span class="nf">SignalHandler</span><span class="p">(</span> <span class="kt">int</span> <span class="n">signum</span>  <span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Interrupt signal ("</span> <span class="o">&lt;&lt;</span> <span class="n">signum</span> <span class="o">&lt;&lt;</span> <span class="s">") received"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+
+    <span class="n">boost</span><span class="o">::</span><span class="n">system</span><span class="o">::</span><span class="n">error_code</span> <span class="n">ec</span><span class="p">;</span>
+    <span class="n">g_socket</span><span class="o">-&gt;</span><span class="nf">shutdown</span><span class="p">(</span><span class="n">boost</span><span class="o">::</span><span class="n">asio</span><span class="o">::</span><span class="n">ip</span><span class="o">::</span><span class="n">tcp</span><span class="o">::</span><span class="n">socket</span><span class="o">::</span><span class="n">shutdown_send</span><span class="p">,</span> <span class="n">ec</span><span class="p">);</span>
+    <span class="c1">//g_socket-&gt;shutdown(boost::asio::ip::tcp::socket::shutdown_receive, ec);</span>
+    <span class="c1">//g_socket-&gt;shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">on_read</span><span class="p">(</span><span class="n">Context</span><span class="o">*</span> <span class="n">context</span><span class="p">,</span> <span class="kt">const</span> <span class="n">boost</span><span class="o">::</span><span class="n">system</span><span class="o">::</span><span class="n">error_code</span> <span class="o">&amp;</span><span class="n">err</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">bytes</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">err</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"on_read, err:"</span> <span class="o">&lt;&lt;</span> <span class="n">err</span><span class="p">.</span><span class="n">message</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+        <span class="k">return</span> <span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"on reawd, bytes:"</span> <span class="o">&lt;&lt;</span> <span class="n">bytes</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">async_read</span><span class="p">(</span><span class="o">*</span><span class="n">context</span><span class="o">-&gt;</span><span class="n">socket</span><span class="p">,</span> <span class="nf">buffer</span><span class="p">(</span><span class="n">context</span><span class="o">-&gt;</span><span class="n">read_buf</span><span class="p">,</span> <span class="mi">1024</span><span class="p">),</span> <span class="n">boost</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="o">&amp;</span><span class="n">on_read</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">placeholders</span><span class="o">::</span><span class="n">error</span><span class="p">,</span> <span class="n">placeholders</span><span class="o">::</span><span class="n">bytes_transferred</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">on_write</span><span class="p">(</span><span class="n">Context</span><span class="o">*</span> <span class="n">context</span><span class="p">,</span> <span class="kt">const</span> <span class="n">boost</span><span class="o">::</span><span class="n">system</span><span class="o">::</span><span class="n">error_code</span> <span class="o">&amp;</span><span class="n">err</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">bytes</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">err</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"on_write, err:"</span> <span class="o">&lt;&lt;</span> <span class="n">err</span><span class="p">.</span><span class="n">message</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+        <span class="n">context</span><span class="o">-&gt;</span><span class="n">socket</span><span class="o">-&gt;</span><span class="nf">close</span><span class="p">();</span>
+        <span class="k">delete</span> <span class="n">context</span><span class="o">-&gt;</span><span class="n">socket</span><span class="p">;</span>
+        <span class="k">delete</span> <span class="n">context</span><span class="p">;</span>
+        <span class="k">return</span> <span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">static</span> <span class="kt">int</span> <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"on_write bytes:"</span> <span class="o">&lt;&lt;</span> <span class="n">bytes</span> <span class="o">&lt;&lt;</span> <span class="s">" time:"</span> <span class="o">&lt;&lt;</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="s">" count:"</span> <span class="o">&lt;&lt;</span> <span class="o">++</span><span class="n">count</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+
+    <span class="c1">//sleep(15);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">g_index</span> <span class="o">&lt;</span> <span class="n">g_write_count</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">context</span><span class="o">-&gt;</span><span class="n">write_buf</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">g_write_size</span><span class="p">);</span>
+        <span class="n">memset</span><span class="p">(</span><span class="n">context</span><span class="o">-&gt;</span><span class="n">write_buf</span><span class="p">,</span> <span class="sc">'a'</span><span class="p">,</span> <span class="n">g_write_size</span><span class="p">);</span>
+
+        <span class="n">async_write</span><span class="p">(</span><span class="o">*</span><span class="n">context</span><span class="o">-&gt;</span><span class="n">socket</span><span class="p">,</span> <span class="nf">buffer</span><span class="p">(</span><span class="n">context</span><span class="o">-&gt;</span><span class="n">write_buf</span><span class="p">,</span> <span class="n">g_write_size</span><span class="p">),</span> <span class="n">boost</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="o">&amp;</span><span class="n">on_write</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">placeholders</span><span class="o">::</span><span class="n">error</span><span class="p">,</span> <span class="n">placeholders</span><span class="o">::</span><span class="n">bytes_transferred</span><span class="p">));</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"async_write, index:"</span> <span class="o">&lt;&lt;</span> <span class="o">++</span><span class="n">g_index</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+
+        <span class="k">delete</span> <span class="n">context</span><span class="o">-&gt;</span><span class="n">write_buf</span><span class="p">;</span>
+        <span class="n">context</span><span class="o">-&gt;</span><span class="n">write_buf</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">on_accept</span><span class="p">(</span><span class="n">Context</span><span class="o">*</span> <span class="n">context</span><span class="p">,</span> <span class="kt">const</span> <span class="n">boost</span><span class="o">::</span><span class="n">system</span><span class="o">::</span><span class="n">error_code</span> <span class="o">&amp;</span> <span class="n">err</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">err</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"on accept, err:"</span> <span class="o">&lt;&lt;</span> <span class="n">err</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+        <span class="k">return</span> <span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">boost</span><span class="o">::</span><span class="n">system</span><span class="o">::</span><span class="n">error_code</span> <span class="n">re_ec</span><span class="p">;</span>
+    <span class="n">ip</span><span class="o">::</span><span class="n">tcp</span><span class="o">::</span><span class="n">socket</span><span class="o">*</span> <span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">-&gt;</span><span class="n">socket</span><span class="p">;</span>
+    <span class="n">ip</span><span class="o">::</span><span class="n">tcp</span><span class="o">::</span><span class="n">endpoint</span> <span class="n">endpoint</span> <span class="o">=</span> <span class="n">socket</span><span class="o">-&gt;</span><span class="n">remote_endpoint</span><span class="p">(</span><span class="n">re_ec</span><span class="p">);</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"remote addr "</span> <span class="o">&lt;&lt;</span> <span class="n">endpoint</span><span class="p">.</span><span class="n">address</span><span class="p">().</span><span class="n">to_v4</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">":"</span> <span class="o">&lt;&lt;</span> <span class="n">endpoint</span><span class="p">.</span><span class="n">port</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+
+    <span class="n">context</span><span class="o">-&gt;</span><span class="n">write_buf</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">g_write_size</span><span class="p">);</span>
+    <span class="n">memset</span><span class="p">(</span><span class="n">context</span><span class="o">-&gt;</span><span class="n">write_buf</span><span class="p">,</span> <span class="sc">'a'</span><span class="p">,</span> <span class="n">g_write_size</span><span class="p">);</span>
+
+    <span class="n">async_write</span><span class="p">(</span><span class="o">*</span><span class="n">socket</span><span class="p">,</span> <span class="nf">buffer</span><span class="p">(</span><span class="n">context</span><span class="o">-&gt;</span><span class="n">write_buf</span><span class="p">,</span> <span class="n">g_write_size</span><span class="p">),</span> <span class="n">boost</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="o">&amp;</span><span class="n">on_write</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">placeholders</span><span class="o">::</span><span class="n">error</span><span class="p">,</span> <span class="n">placeholders</span><span class="o">::</span><span class="n">bytes_transferred</span><span class="p">));</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"async_write, index:"</span> <span class="o">&lt;&lt;</span> <span class="o">++</span><span class="n">g_index</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+
+    <span class="n">async_read</span><span class="p">(</span><span class="o">*</span><span class="n">socket</span><span class="p">,</span> <span class="nf">buffer</span><span class="p">(</span><span class="n">context</span><span class="o">-&gt;</span><span class="n">read_buf</span><span class="p">,</span> <span class="mi">1024</span><span class="p">),</span> <span class="n">boost</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="o">&amp;</span><span class="n">on_read</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">placeholders</span><span class="o">::</span><span class="n">error</span><span class="p">,</span> <span class="n">placeholders</span><span class="o">::</span><span class="n">bytes_transferred</span><span class="p">));</span>
+
+    <span class="k">delete</span> <span class="n">context</span><span class="o">-&gt;</span><span class="n">write_buf</span><span class="p">;</span>
+    <span class="n">context</span><span class="o">-&gt;</span><span class="n">write_buf</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+
+    <span class="n">g_socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">-&gt;</span><span class="n">socket</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">*</span> <span class="n">argv</span><span class="p">[])</span> 
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"usage: "</span> <span class="o">&lt;&lt;</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="s">" port write_size write_count"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">signal</span><span class="p">(</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">SignalHandler</span><span class="p">);</span>
+
+    <span class="kt">int</span> <span class="n">port</span> <span class="o">=</span> <span class="n">atoi</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+    <span class="n">g_write_size</span> <span class="o">=</span> <span class="n">atoi</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>
+    <span class="n">g_write_count</span> <span class="o">=</span> <span class="n">atoi</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]);</span>
+
+    <span class="n">io_service</span> <span class="n">service</span><span class="p">;</span>
+    <span class="n">boost</span><span class="o">::</span><span class="n">asio</span><span class="o">::</span><span class="n">ip</span><span class="o">::</span><span class="n">tcp</span><span class="o">::</span><span class="n">acceptor</span> <span class="n">acceptor</span><span class="p">(</span><span class="n">service</span><span class="p">);</span>
+    <span class="n">ip</span><span class="o">::</span><span class="n">tcp</span><span class="o">::</span><span class="n">endpoint</span> <span class="n">endpoint</span><span class="p">(</span><span class="n">boost</span><span class="o">::</span><span class="n">asio</span><span class="o">::</span><span class="n">ip</span><span class="o">::</span><span class="n">tcp</span><span class="o">::</span><span class="n">v4</span><span class="p">(),</span> <span class="n">port</span><span class="p">);</span>
+    <span class="n">acceptor</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="n">endpoint</span><span class="p">.</span><span class="n">protocol</span><span class="p">());</span>
+    <span class="n">acceptor</span><span class="p">.</span><span class="n">set_option</span><span class="p">(</span><span class="n">ip</span><span class="o">::</span><span class="n">tcp</span><span class="o">::</span><span class="n">acceptor</span><span class="o">::</span><span class="n">reuse_address</span><span class="p">(</span><span class="nb">true</span><span class="p">));</span>
+    <span class="n">acceptor</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="n">endpoint</span><span class="p">);</span>
+    <span class="n">acceptor</span><span class="p">.</span><span class="nf">listen</span><span class="p">();</span>
+    <span class="n">ip</span><span class="o">::</span><span class="n">tcp</span><span class="o">::</span><span class="n">socket</span><span class="o">*</span> <span class="n">s</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ip</span><span class="o">::</span><span class="n">tcp</span><span class="o">::</span><span class="n">socket</span><span class="p">(</span><span class="n">service</span><span class="p">);</span>
+    <span class="n">Context</span><span class="o">*</span> <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Context</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">service</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">acceptor</span><span class="p">);</span>
+    <span class="n">acceptor</span><span class="p">.</span><span class="n">async_accept</span><span class="p">(</span><span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="n">boost</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="o">&amp;</span><span class="n">on_accept</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">_1</span><span class="p">));</span>
+
+    <span class="n">service</span><span class="p">.</span><span class="nf">run</span><span class="p">();</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+            
+            
+            <hr/>
+            <aside>
+            <nav>
+            <ul class="articles-timeline">
+                <li class="previous-article">« <a href="/cppcheck使用方式详解.html" title="Previous: cppcheck使用方式详解">cppcheck使用方式详解</a></li>
+            </ul>
+            </nav>
+            </aside>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+            <table class="table">
+            <!-- <time pubdate="pubdate" datetime="2017-11-09T00:00:00+08:00">11 9, 2017</time> -->
+            <tr>
+                <td>Published</td>
+                <td><time pubdate="pubdate" datetime="2017-11-09T00:00:00+08:00">2017-11-9</time></td>
+            </tr>
+            <tr>
+                <td>Category</td>
+                <td><a class="category-link" href="/categories.html#language-ref">Language</a></td>
+            </tr>
+            <tr>
+                <td>Tags</td>
+                <td>
+                    <ul class="list-of-tags tags-in-article">
+                        <li><a href="/tags.html#boost-ref">boost
+                            <span>1</span>
+</a></li>
+                    </ul>
+                </td>
+            </tr>
+            </table>
+        </div>
+        </section>
+</div>
+</article>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+        <div id="push"></div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
+    </ul>
+</div>
+</footer>            <!--
+        <script src="http://code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        -->
+        <script src="/theme/js/jquery.min.js"></script>
+        <script src="/theme/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+        <script>
+            $("div.article-content table").addClass("table table-hover");
+        </script>
+
+    
+    </body>
+    <!-- Theme: Elegant built for Pelican
+    License : http://oncrashreboot.com/pelican-elegant -->
+</html>

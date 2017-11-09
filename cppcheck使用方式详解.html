@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"> 
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="littlewhite" />
+        <meta name="copyright" content="littlewhite" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="cppcheck, Tool, " />
+
+<meta property="og:title" content="cppcheck使用方式详解 "/>
+<meta property="og:url" content="/cppcheck使用方式详解.html" />
+<meta property="og:description" content="cppcheck使用方式详解¶ 顾名思义，cppcheck是对C++代码的静态检查工具，只需对源代码进行静态扫描，即可发现一些隐患，包括如下分类 Dead pointers Division by zero Integer overflows Invalid bit shift operands Invalid conversions Invalid usage of STL Memory management Null pointer dereferences Out of bounds checking Uninitialized variables Writing const data 并按严重程度又进行了如下区分 error: 直接判定为bug warning: 可能会引起bug style: 代码风格的问题，如包含未使用函数，重复代码等 performance: 性能相关的问题，如函数参数中复杂对象的值传递 ..." />
+<meta property="og:site_name" content="LittleWhite" />
+<meta property="og:article:author" content="littlewhite" />
+<meta property="og:article:published_time" content="2017-11-09T00:00:00+08:00" />
+<meta property="" content="2017-11-09T00:00:00+08:00" />
+<meta name="twitter:title" content="cppcheck使用方式详解 ">
+<meta name="twitter:description" content="cppcheck使用方式详解¶ 顾名思义，cppcheck是对C++代码的静态检查工具，只需对源代码进行静态扫描，即可发现一些隐患，包括如下分类 Dead pointers Division by zero Integer overflows Invalid bit shift operands Invalid conversions Invalid usage of STL Memory management Null pointer dereferences Out of bounds checking Uninitialized variables Writing const data 并按严重程度又进行了如下区分 error: 直接判定为bug warning: 可能会引起bug style: 代码风格的问题，如包含未使用函数，重复代码等 performance: 性能相关的问题，如函数参数中复杂对象的值传递 ...">
+
+        <title>cppcheck使用方式详解  · LittleWhite
+</title>
+        <!-- 
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
+        --!>
+        <link href="/theme/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="/theme/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/theme/css/custom.css" media="screen">
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container-fluid">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="/"><span class=site-name>LittleWhite</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href="">Home</a></li>
+                            <li ><a href="/categories.html">Categories</a></li>
+                            <li ><a href="/tags.html">Tags</a></li>
+                            <li ><a href="/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<article>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+    <h1><a href="/cppcheck使用方式详解.html"> cppcheck使用方式详解  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+    <div class="span2 table-of-content">
+        <nav>
+        <h4>Contents</h4>
+        <div class="toc">
+<ul>
+<li><a href="#cppcheck">cppcheck使用方式详解</a><ul>
+<li><a href="#_1">基本使用方式</a><ul>
+<li><a href="#_2">检查文件和目录</a></li>
+<li><a href="#_3">参数选项介绍</a><ul>
+<li><a href="#_4">只打印扫描结果</a></li>
+<li><a href="#_5">指定消息级别</a></li>
+<li><a href="#_6">并发扫描</a></li>
+<li><a href="#_7">输出不确定项</a></li>
+<li><a href="#_8">指定源代码平台</a></li>
+<li><a href="#xml">以xml格式输出</a></li>
+<li><a href="#_9">格式化输出信息</a></li>
+<li><a href="#_10">忽略指定类型的消息</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_11">结果分析</a></li>
+<li><a href="#_12">集成到其它工具</a></li>
+<li><a href="#_13">参考文档</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </nav>
+    </div>
+    <div class="span8 article-content">
+            
+            
+<h1 id="cppcheck">cppcheck使用方式详解<a class="headerlink" href="#cppcheck" title="Permanent link">¶</a></h1>
+<p>顾名思义，cppcheck是对C++代码的静态检查工具，只需对源代码进行静态扫描，即可发现一些隐患，包括如下分类</p>
+<ul>
+<li>Dead pointers</li>
+<li>Division by zero</li>
+<li>Integer overflows</li>
+<li>Invalid bit shift operands</li>
+<li>Invalid conversions</li>
+<li>Invalid usage of STL</li>
+<li>Memory management</li>
+<li>Null pointer dereferences</li>
+<li>Out of bounds checking</li>
+<li>Uninitialized variables</li>
+<li>Writing const data</li>
+</ul>
+<p>并按严重程度又进行了如下区分</p>
+<ul>
+<li>error: 直接判定为bug</li>
+<li>warning: 可能会引起bug</li>
+<li>style: 代码风格的问题，如包含未使用函数，重复代码等</li>
+<li>performance: 性能相关的问题，如函数参数中复杂对象的值传递</li>
+<li>portability: 代码兼容性相关的问题</li>
+<li>information: 可以忽略不看</li>
+</ul>
+<p>以上警告的准确率并非100%，我们还需人为的去对照代码具体分析</p>
+<h2 id="_1">基本使用方式<a class="headerlink" href="#_1" title="Permanent link">¶</a></h2>
+<h3 id="_2">检查文件和目录<a class="headerlink" href="#_2" title="Permanent link">¶</a></h3>
+<p>检查单个文件</p>
+<div class="highlight"><pre><span></span>cppcheck file1.cpp
+</pre></div>
+<p>检查目录下所有文件</p>
+<div class="highlight"><pre><span></span>cppcheck path
+</pre></div>
+<p>检查目录下所有文件，排除某些目录</p>
+<div class="highlight"><pre><span></span>cppcheck -i path/sub1 -i path/sub2 path
+</pre></div>
+<h3 id="_3">参数选项介绍<a class="headerlink" href="#_3" title="Permanent link">¶</a></h3>
+<h4 id="_4">只打印扫描结果<a class="headerlink" href="#_4" title="Permanent link">¶</a></h4>
+<p><strong><code>-q, --quiet</code></strong></p>
+<h4 id="_5">指定消息级别<a class="headerlink" href="#_5" title="Permanent link">¶</a></h4>
+<p><strong><code>--enable</code></strong></p>
+<p>指定展示消息级别，默认只展示error类型的消息，展示warning和performance如下</p>
+<div class="highlight"><pre><span></span>cppcheck --enable=warning --enable=performance path
+</pre></div>
+<h4 id="_6">并发扫描<a class="headerlink" href="#_6" title="Permanent link">¶</a></h4>
+<p><strong><code>-j</code></strong></p>
+<p>多进程扫描，和make的选项含义相同</p>
+<h4 id="_7">输出不确定项<a class="headerlink" href="#_7" title="Permanent link">¶</a></h4>
+<p><strong><code>--inconclusive</code></strong></p>
+<p>cppcheck只会输出它自己确定的问题，使用该参数相当于放宽对bug的标准</p>
+<h4 id="_8">指定源代码平台<a class="headerlink" href="#_8" title="Permanent link">¶</a></h4>
+<p><strong><code>--platform</code></strong></p>
+<p>可指定为unix32, unix64, win32A, win32W, win64，默认为cppcheck编译所使用平台</p>
+<h4 id="xml">以xml格式输出<a class="headerlink" href="#xml" title="Permanent link">¶</a></h4>
+<p><strong><code>--xml-version</code></strong></p>
+<p>可指定为1和2</p>
+<div class="highlight"><pre><span></span>cppcheck --xml-version=2 file1.cpp
+</pre></div>
+<h4 id="_9">格式化输出信息<a class="headerlink" href="#_9" title="Permanent link">¶</a></h4>
+<p><strong><code>--template</code></strong></p>
+<p>提供的模板包括vs和gcc</p>
+<p>比如<code>cppcheck --template=vs gui/test.cpp</code>输出格式为</p>
+<div class="highlight"><pre><span></span>Checking gui/test.cpp...
+gui/test.cpp(31): error: Memory leak: b
+gui/test.cpp(16): error: Mismatching allocation and deallocation: k
+</pre></div>
+<p><code>cppcheck --template=gcc gui/test.cpp</code>输出格式为</p>
+<div class="highlight"><pre><span></span>Checking gui/test.cpp...
+gui/test.cpp:31: error: Memory leak: b
+gui/test.cpp:16: error: Mismatching allocation and deallocation: k
+</pre></div>
+<p>也可以自定义格式，<code>cppcheck --template="{file},{line},{severity},{id},{message}" gui/test.cpp</code></p>
+<div class="highlight"><pre><span></span>Checking gui/test.cpp...
+gui/test.cpp,31,error,memleak,Memory leak: b
+gui/test.cpp,16,error,mismatchAllocDealloc,Mismatching allocation and deallocation
+</pre></div>
+<p>可使用的标记包括</p>
+<table>
+<thead>
+<tr>
+<th align="left">标记名</th>
+<th align="right">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">callstack</td>
+<td align="right">callstack - if available</td>
+</tr>
+<tr>
+<td align="left">file</td>
+<td align="right">filename</td>
+</tr>
+<tr>
+<td align="left">id</td>
+<td align="right">message id</td>
+</tr>
+<tr>
+<td align="left">line</td>
+<td align="right">line number</td>
+</tr>
+<tr>
+<td align="left">message</td>
+<td align="right">verbose message text</td>
+</tr>
+<tr>
+<td align="left">severity</td>
+<td align="right">a type/rank of message</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_10">忽略指定类型的消息<a class="headerlink" href="#_10" title="Permanent link">¶</a></h4>
+<p>按如下方式定义一个消息类型</p>
+<div class="highlight"><pre><span></span><span class="k">[error id]:[filename]:[line]</span>
+<span class="k">[error id]:[filename2]</span>
+<span class="k">[error id]</span>
+</pre></div>
+<p><strong><code>--suppress</code></strong></p>
+<p>通过命令行指定</p>
+<div class="highlight"><pre><span></span>cppcheck --suppress=memleak:src/file1.cpp src/
+</pre></div>
+<p><strong><code>--suppressions-list</code></strong></p>
+<p>通过文件指定，假设有文件suppressions.txt内容如下</p>
+<div class="highlight"><pre><span></span>// suppress memleak and exceptNew errors in the file src/file1.cpp
+memleak:src/file1.cpp
+exceptNew:src/file1.cpp
+
+// suppress all uninitvar errors in all files
+uninitvar
+</pre></div>
+<p>使用方式如下</p>
+<div class="highlight"><pre><span></span>cppcheck --suppressions-list=suppressions.txt src/
+</pre></div>
+<p><strong><code>--inline-suppr</code></strong></p>
+<p>在源代码中指定，假设如下文件</p>
+<div class="highlight"><pre><span></span>void f() {
+    char arr[5];
+    arr[10] = 0;
+}
+</pre></div>
+<p>扫描报错为</p>
+<div class="highlight"><pre><span></span># cppcheck test.c
+Checking test.c...
+[test.c:3]: (error) Array 'arr[5]' index 10 out of bounds
+</pre></div>
+<p>将文件修改如下</p>
+<div class="highlight"><pre><span></span>void f() {
+    char arr[5];
+    // cppcheck-suppress arrayIndexOutOfBounds
+    arr[10] = 0;
+}
+</pre></div>
+<p>采用如下命令可屏蔽该错误</p>
+<div class="highlight"><pre><span></span>cppcheck --inline-suppr test.c
+</pre></div>
+<h2 id="_11">结果分析<a class="headerlink" href="#_11" title="Permanent link">¶</a></h2>
+<p>将扫描结果存入xml文件，再通过cppcheck-htmlreport工具可展示为html格式，方便查看错误信息以及对应源代码，cppcheck-htmlreport是一个Python脚本，可从cppcheck的github仓库下载<a href="https://github.com/danmar/cppcheck.git">https://github.com/danmar/cppcheck.git</a></p>
+<div class="highlight"><pre><span></span>cppcheck --quiet --std=c++03 --platform=unix64 \
+    --language=c++ -j 8 --enable=warning --enable=performance  \
+    --xml-version=2 src/ &gt; cppcheck-result.xml 2&gt;&amp;1
+
+cppcheck-htmlreport --file cppcheck-result.xml \
+    --source-dir=. \
+    --report-dir=/usr/share/nginx/html/cppcheck/ \
+    --title=balabala
+</pre></div>
+<p>cppcheck-htmlreport参数选项说明如下</p>
+<div class="highlight"><pre><span></span>--file: cppcheck输出结果文件
+--source-dir: 源代码路径，如果cppcheck扫描的是src目录，则这里为src的父目录
+--report-dir: 报告存储目录
+--titie: 报告的标题名字
+</pre></div>
+<p>展示结果如下</p>
+<p><img alt="" src="http://littlewhite.us/pic/cppcheck.png"/></p>
+<h2 id="_12">集成到其它工具<a class="headerlink" href="#_12" title="Permanent link">¶</a></h2>
+<p>cppcheck可以和git, svn, jenkins等平台和工具结合，在svn和git commit之前执行相应脚本，或者在jenkins项目构建之后执行相应检查，具体用法参考以下链接</p>
+<ul>
+<li>CLion - <a href="https://plugins.jetbrains.com/plugin/8143-cppcheck">Cppcheck plugin</a></li>
+<li>Code::Blocks - integrated</li>
+<li>CodeDX (software assurance tool) - <a href="http://codedx.com/code-dx-standard/">integrated</a></li>
+<li>CodeLite - integrated</li>
+<li>CppDepend 5 - <a href="http://www.cppdepend.com/CppDependV5.aspx">integrated</a></li>
+<li>Eclipse - <a href="https://github.com/kwin/cppcheclipse/wiki/Installation">Cppcheclipse</a></li>
+<li>KDevelop - <a href="https://kdevelop.org/">integrated since v5.1</a></li>
+<li>gedit - <a href="http://github.com/odamite/gedit-cppcheck">gedit plugin</a></li>
+<li>Hudson - <a href="http://wiki.hudson-ci.org/display/HUDSON/Cppcheck+Plugin">Cppcheck Plugin</a></li>
+<li>Jenkins - <a href="http://wiki.jenkins-ci.org/display/JENKINS/Cppcheck+Plugin">Cppcheck Plugin</a></li>
+<li>Mercurial (Linux) - <a href="http://sourceforge.net/p/cppcheck/wiki/mercurialhook/">pre-commit hook</a> - Check for new errors on commit (requires interactive terminal)</li>
+<li>Tortoise SVN - <a href="http://omerez.com/automatic-static-code-analysis/">Adding a pre-commit hook script</a></li>
+<li>Git (Linux) - <a href="https://github.com/danmar/cppcheck/blob/master/tools/git-pre-commit-cppcheck">pre-commit hook</a> - * * Check for errors in files going into commit (requires interactive terminal)</li>
+<li>Visual Studio - <a href="https://github.com/VioletGiraffe/cppcheck-vs-addin/releases/latest">Visual Studio plugin</a></li>
+<li>tCreator - <a href="https://sourceforge.net/projects/qtprojecttool/files">Qt Project Tool (qpt)</a></li>
+</ul>
+<h2 id="_13">参考文档<a class="headerlink" href="#_13" title="Permanent link">¶</a></h2>
+<ul>
+<li>cppcheck官网 <a href="http://cppcheck.net/">http://cppcheck.net/</a></li>
+<li>cppcheck1.8.1使用文档 <a href="http://cppcheck.net/manual.pdf">http://cppcheck.net/manual.pdf</a></li>
+</ul>
+            
+            
+            <hr/>
+            <aside>
+            <nav>
+            <ul class="articles-timeline">
+                <li class="previous-article">« <a href="/Unix IPC概述.html" title="Previous: Unix IPC概述">Unix IPC概述</a></li>
+                <li class="next-article"><a href="/Boost Asio async_write回调行为分析.html" title="Next: Boost Asio async_write回调行为分析">Boost Asio async_write回调行为分析</a> »</li>
+            </ul>
+            </nav>
+            </aside>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+            <table class="table">
+            <!-- <time pubdate="pubdate" datetime="2017-11-09T00:00:00+08:00">11 9, 2017</time> -->
+            <tr>
+                <td>Published</td>
+                <td><time pubdate="pubdate" datetime="2017-11-09T00:00:00+08:00">2017-11-9</time></td>
+            </tr>
+            <tr>
+                <td>Category</td>
+                <td><a class="category-link" href="/categories.html#tool-ref">Tool</a></td>
+            </tr>
+            <tr>
+                <td>Tags</td>
+                <td>
+                    <ul class="list-of-tags tags-in-article">
+                        <li><a href="/tags.html#cppcheck-ref">cppcheck
+                            <span>1</span>
+</a></li>
+                    </ul>
+                </td>
+            </tr>
+            </table>
+        </div>
+        </section>
+</div>
+</article>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+        <div id="push"></div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
+    </ul>
+</div>
+</footer>            <!--
+        <script src="http://code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        -->
+        <script src="/theme/js/jquery.min.js"></script>
+        <script src="/theme/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+        <script>
+            $("div.article-content table").addClass("table table-hover");
+        </script>
+
+    
+    </body>
+    <!-- Theme: Elegant built for Pelican
+    License : http://oncrashreboot.com/pelican-elegant -->
+</html>
