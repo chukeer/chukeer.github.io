@@ -13,7 +13,7 @@
 <meta name="keywords" content="c++, boost, Language, " />
 
 <meta property="og:title" content="boost内存池singleton_pool详解 "/>
-<meta property="og:url" content="http://chukeer.github.io/boost内存池singleton_pool详解.html" />
+<meta property="og:url" content="https://chukeer.github.io/boost内存池singleton_pool详解.html" />
 <meta property="og:description" content="基本概念¶ 内存池可以避免频繁分配释放内存时导致操作系统内存碎片的问题 boost内存池提供了如下对象 singleton_pool 对pool内存池的封装，在其基础上加了锁，避免多线程操作的安全问题，并暴露了常用的接口。 pool 真正内存池的实现，管理block链表，并交给simple_segregated_storage分割成固定长度的chunk，每次给用户分配1个或多个chunk，每个chunk都是固定长度的 simple_segregated_storage 将block分割成chunk并组成链表进行管理 通常我们使用的都是singleton_pool对象 接口定义¶ 这里只列出常用接口 template &lt;typename Tag, unsigned RequestedSize, typename UserAllocator, typename Mutex, unsigned NextSize, unsigned MaxSize &gt; class singleton_pool { public: static void * malloc(); static void * ordered_malloc(); static void * ordered_malloc(const size_type n); static bool is_from ..." />
 <meta property="og:site_name" content="LittleWhite" />
 <meta property="og:article:author" content="littlewhite" />
@@ -28,12 +28,12 @@
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
         --!>
-        <link href="http://chukeer.github.io/theme/css/bootstrap-combined.min.css" rel="stylesheet">
-        <link href="http://chukeer.github.io/theme/css/font-awesome.css" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/pygments.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/tipuesearch/tipuesearch.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/elegant.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/custom.css" media="screen">
+        <link href="https://chukeer.github.io/theme/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="https://chukeer.github.io/theme/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="https://chukeer.github.io/theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://chukeer.github.io/theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://chukeer.github.io/theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://chukeer.github.io/theme/css/custom.css" media="screen">
     </head>
     <body>
         <div id="content-sans-footer">
@@ -45,14 +45,14 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </a>
-                    <a class="brand" href="http://chukeer.github.io/"><span class=site-name>LittleWhite</span></a>
+                    <a class="brand" href="https://chukeer.github.io/"><span class=site-name>LittleWhite</span></a>
                     <div class="nav-collapse collapse">
                         <ul class="nav pull-right top-menu">
-                            <li ><a href="http://chukeer.github.io">Home</a></li>
-                            <li ><a href="http://chukeer.github.io/categories.html">Categories</a></li>
-                            <li ><a href="http://chukeer.github.io/tags.html">Tags</a></li>
-                            <li ><a href="http://chukeer.github.io/archives.html">Archives</a></li>
-                            <li><form class="navbar-search" action="http://chukeer.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            <li ><a href="https://chukeer.github.io">Home</a></li>
+                            <li ><a href="https://chukeer.github.io/categories.html">Categories</a></li>
+                            <li ><a href="https://chukeer.github.io/tags.html">Tags</a></li>
+                            <li ><a href="https://chukeer.github.io/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="https://chukeer.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
                         </ul>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
 <article>
 <div class="row-fluid">
     <header class="page-header span10 offset2">
-    <h1><a href="http://chukeer.github.io/boost内存池singleton_pool详解.html"> boost内存池singleton_pool详解  </a></h1>
+    <h1><a href="https://chukeer.github.io/boost内存池singleton_pool详解.html"> boost内存池singleton_pool详解  </a></h1>
     </header>
 </div>
 
@@ -262,7 +262,7 @@ static bool purge_memory();
             <aside>
             <nav>
             <ul class="articles-timeline">
-                <li class="previous-article">« <a href="http://chukeer.github.io/Boost Asio async_write回调行为分析.html" title="Previous: Boost Asio async_write回调行为分析">Boost Asio async_write回调行为分析</a></li>
+                <li class="previous-article">« <a href="https://chukeer.github.io/Boost Asio async_write回调行为分析.html" title="Previous: Boost Asio async_write回调行为分析">Boost Asio async_write回调行为分析</a></li>
             </ul>
             </nav>
             </aside>
@@ -277,16 +277,16 @@ static bool purge_memory();
             </tr>
             <tr>
                 <td>Category</td>
-                <td><a class="category-link" href="http://chukeer.github.io/categories.html#language-ref">Language</a></td>
+                <td><a class="category-link" href="https://chukeer.github.io/categories.html#language-ref">Language</a></td>
             </tr>
             <tr>
                 <td>Tags</td>
                 <td>
                     <ul class="list-of-tags tags-in-article">
-                        <li><a href="http://chukeer.github.io/tags.html#boost-ref">boost
+                        <li><a href="https://chukeer.github.io/tags.html#boost-ref">boost
                             <span>2</span>
 </a></li>
-                        <li><a href="http://chukeer.github.io/tags.html#c-ref">c++
+                        <li><a href="https://chukeer.github.io/tags.html#c-ref">c++
                             <span>15</span>
 </a></li>
                     </ul>
@@ -313,8 +313,8 @@ static bool purge_memory();
         <script src="http://code.jquery.com/jquery.min.js"></script>
         <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
         -->
-        <script src="http://chukeer.github.io/theme/js/jquery.min.js"></script>
-        <script src="http://chukeer.github.io/theme/js/bootstrap.min.js"></script>
+        <script src="https://chukeer.github.io/theme/js/jquery.min.js"></script>
+        <script src="https://chukeer.github.io/theme/js/bootstrap.min.js"></script>
         <script>
             function validateForm(query)
             {

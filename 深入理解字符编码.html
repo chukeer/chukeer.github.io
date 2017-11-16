@@ -13,7 +13,7 @@
 <meta name="keywords" content=", Skill, " />
 
 <meta property="og:title" content="深入理解字符编码 "/>
-<meta property="og:url" content="http://chukeer.github.io/深入理解字符编码.html" />
+<meta property="og:url" content="https://chukeer.github.io/深入理解字符编码.html" />
 <meta property="og:description" content="大概每个人在使用软件时都遇到过乱码的问题，这是由于字符的编码和解码方式不一致导致，我们知道计算机只认识二进制数据，因此程序在处理、存储、传输文本时，需要将文本转化成二进制，通俗的来讲，编码就是将字符转化为二进制序列，解码就是将二进制序列转化为字符 编码模型¶ 先抛开ascii，gbk，unicode，utf-8这些概念，我们先来想想如果自己要在计算机中表示所有字符该怎么办 字符集¶ 首先我们要确认需要表示的字符集合，字符集是一个抽象的概念，它与编码无关，比如英文字符，数字标点，中文字符，这些都可以称之为字符集 编码集¶ 为了表示这些字符集，我们需要将字符集中的每个字符进行惟一标识，最简单的方式就是将字符映射到一个非负整数，这个整数集合就是编码集合，每个字符集都对应自己的一个编码集 编码方案¶ 由于计算机处理的是二进制数居，为了方便存储和传输，我们要将编码集中的整数表示成二进制序列，有些整数用一个字节就可以表示，有些可能需要多个字节，这个转化方式就是编码方案 有了以上的概念，我们再来理解ascii，gbk，utf-8 ASCII¶ 计算机最早由老外发明，因此最早的ASCII编码只考虑到了英文字母的表示， 字符集：英文字母、数字、标点、控制字符（回车 ..." />
 <meta property="og:site_name" content="LittleWhite" />
 <meta property="og:article:author" content="littlewhite" />
@@ -28,12 +28,12 @@
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
         --!>
-        <link href="http://chukeer.github.io/theme/css/bootstrap-combined.min.css" rel="stylesheet">
-        <link href="http://chukeer.github.io/theme/css/font-awesome.css" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/pygments.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/tipuesearch/tipuesearch.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/elegant.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/custom.css" media="screen">
+        <link href="https://chukeer.github.io/theme/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="https://chukeer.github.io/theme/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="https://chukeer.github.io/theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://chukeer.github.io/theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://chukeer.github.io/theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://chukeer.github.io/theme/css/custom.css" media="screen">
     </head>
     <body>
         <div id="content-sans-footer">
@@ -45,14 +45,14 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </a>
-                    <a class="brand" href="http://chukeer.github.io/"><span class=site-name>LittleWhite</span></a>
+                    <a class="brand" href="https://chukeer.github.io/"><span class=site-name>LittleWhite</span></a>
                     <div class="nav-collapse collapse">
                         <ul class="nav pull-right top-menu">
-                            <li ><a href="http://chukeer.github.io">Home</a></li>
-                            <li ><a href="http://chukeer.github.io/categories.html">Categories</a></li>
-                            <li ><a href="http://chukeer.github.io/tags.html">Tags</a></li>
-                            <li ><a href="http://chukeer.github.io/archives.html">Archives</a></li>
-                            <li><form class="navbar-search" action="http://chukeer.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            <li ><a href="https://chukeer.github.io">Home</a></li>
+                            <li ><a href="https://chukeer.github.io/categories.html">Categories</a></li>
+                            <li ><a href="https://chukeer.github.io/tags.html">Tags</a></li>
+                            <li ><a href="https://chukeer.github.io/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="https://chukeer.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
                         </ul>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
 <article>
 <div class="row-fluid">
     <header class="page-header span10 offset2">
-    <h1><a href="http://chukeer.github.io/深入理解字符编码.html"> 深入理解字符编码  </a></h1>
+    <h1><a href="https://chukeer.github.io/深入理解字符编码.html"> 深入理解字符编码  </a></h1>
     </header>
 </div>
 
@@ -246,8 +246,8 @@ UnicodeEncodeError: 'ascii' codec can't encode characters in position 0-1: ordin
             <aside>
             <nav>
             <ul class="articles-timeline">
-                <li class="previous-article">« <a href="http://chukeer.github.io/Mac Alfred快速复制剪贴板和指定文本.html" title="Previous: Mac Alfred快速复制剪贴板和指定文本">Mac Alfred快速复制剪贴板和指定文本</a></li>
-                <li class="next-article"><a href="http://chukeer.github.io/linux终端输出带颜色字符.html" title="Next: linux终端输出带颜色字符">linux终端输出带颜色字符</a> »</li>
+                <li class="previous-article">« <a href="https://chukeer.github.io/Mac Alfred快速复制剪贴板和指定文本.html" title="Previous: Mac Alfred快速复制剪贴板和指定文本">Mac Alfred快速复制剪贴板和指定文本</a></li>
+                <li class="next-article"><a href="https://chukeer.github.io/linux终端输出带颜色字符.html" title="Next: linux终端输出带颜色字符">linux终端输出带颜色字符</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -262,7 +262,7 @@ UnicodeEncodeError: 'ascii' codec can't encode characters in position 0-1: ordin
             </tr>
             <tr>
                 <td>Category</td>
-                <td><a class="category-link" href="http://chukeer.github.io/categories.html#skill-ref">Skill</a></td>
+                <td><a class="category-link" href="https://chukeer.github.io/categories.html#skill-ref">Skill</a></td>
             </tr>
             </table>
         </div>
@@ -285,8 +285,8 @@ UnicodeEncodeError: 'ascii' codec can't encode characters in position 0-1: ordin
         <script src="http://code.jquery.com/jquery.min.js"></script>
         <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
         -->
-        <script src="http://chukeer.github.io/theme/js/jquery.min.js"></script>
-        <script src="http://chukeer.github.io/theme/js/bootstrap.min.js"></script>
+        <script src="https://chukeer.github.io/theme/js/jquery.min.js"></script>
+        <script src="https://chukeer.github.io/theme/js/bootstrap.min.js"></script>
         <script>
             function validateForm(query)
             {

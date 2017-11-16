@@ -13,7 +13,7 @@
 <meta name="keywords" content="ipc, Skill, " />
 
 <meta property="og:title" content="Unix IPC概述 "/>
-<meta property="og:url" content="http://chukeer.github.io/Unix IPC概述.html" />
+<meta property="og:url" content="https://chukeer.github.io/Unix IPC概述.html" />
 <meta property="og:description" content="IPC全称Inter-Process Communication，即进程间通信。我们知道一个进程可以有多个线程，他们可以共享进程的全部资源，比如打开的文件句柄，创建的全局变量等，因此线程间通信相对就容易一些，而不同进程拥有独立的虚拟地址空间，他们之间想要通信就需要特定的IPC方法。我们只讨论同一主机上的进程间通信，socket通信是广义上的进程间通信 这里主要介绍管道，FIFO，消息队列三种IPC通信机制 管道¶ 管道是一种单向通信的数据通道，其表现为一对文件句柄，一个写入端和一个读取端，模型如下 即用户空间创建管道，得到两个文件句柄，往fd[1]写数据，从fd[0]读数据，虽然管道是由单个进程创建，但很少在单个进程内使用，最常用的是父子进程之间进行通信，如下 首先父进程创建管道后调用fork生成子进程，子进程继承了父进程的管道句柄，接着父进程关闭管道的读取端，子进程关闭管道的写入端，这样父子进程之间就生成了一个单向数据流，如下 这样父进程往fd[1]写数据，子进程就能从fd[0]读到 管道最常用的场景是unix shell中，比如以下命令 who | sort | head ..." />
 <meta property="og:site_name" content="LittleWhite" />
 <meta property="og:article:author" content="littlewhite" />
@@ -28,12 +28,12 @@
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
         --!>
-        <link href="http://chukeer.github.io/theme/css/bootstrap-combined.min.css" rel="stylesheet">
-        <link href="http://chukeer.github.io/theme/css/font-awesome.css" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/pygments.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/tipuesearch/tipuesearch.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/elegant.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/custom.css" media="screen">
+        <link href="https://chukeer.github.io/theme/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="https://chukeer.github.io/theme/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="https://chukeer.github.io/theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://chukeer.github.io/theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://chukeer.github.io/theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://chukeer.github.io/theme/css/custom.css" media="screen">
     </head>
     <body>
         <div id="content-sans-footer">
@@ -45,14 +45,14 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </a>
-                    <a class="brand" href="http://chukeer.github.io/"><span class=site-name>LittleWhite</span></a>
+                    <a class="brand" href="https://chukeer.github.io/"><span class=site-name>LittleWhite</span></a>
                     <div class="nav-collapse collapse">
                         <ul class="nav pull-right top-menu">
-                            <li ><a href="http://chukeer.github.io">Home</a></li>
-                            <li ><a href="http://chukeer.github.io/categories.html">Categories</a></li>
-                            <li ><a href="http://chukeer.github.io/tags.html">Tags</a></li>
-                            <li ><a href="http://chukeer.github.io/archives.html">Archives</a></li>
-                            <li><form class="navbar-search" action="http://chukeer.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            <li ><a href="https://chukeer.github.io">Home</a></li>
+                            <li ><a href="https://chukeer.github.io/categories.html">Categories</a></li>
+                            <li ><a href="https://chukeer.github.io/tags.html">Tags</a></li>
+                            <li ><a href="https://chukeer.github.io/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="https://chukeer.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
                         </ul>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
 <article>
 <div class="row-fluid">
     <header class="page-header span10 offset2">
-    <h1><a href="http://chukeer.github.io/Unix IPC概述.html"> Unix IPC概述  </a></h1>
+    <h1><a href="https://chukeer.github.io/Unix IPC概述.html"> Unix IPC概述  </a></h1>
     </header>
 </div>
 
@@ -275,8 +275,8 @@ int mq_unlink(const char *name)
             <aside>
             <nav>
             <ul class="articles-timeline">
-                <li class="previous-article">« <a href="http://chukeer.github.io/linux shell发送邮件.html" title="Previous: linux shell发送邮件">linux shell发送邮件</a></li>
-                <li class="next-article"><a href="http://chukeer.github.io/gtest.html" title="Next: gtest">gtest</a> »</li>
+                <li class="previous-article">« <a href="https://chukeer.github.io/linux shell发送邮件.html" title="Previous: linux shell发送邮件">linux shell发送邮件</a></li>
+                <li class="next-article"><a href="https://chukeer.github.io/gtest.html" title="Next: gtest">gtest</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -291,13 +291,13 @@ int mq_unlink(const char *name)
             </tr>
             <tr>
                 <td>Category</td>
-                <td><a class="category-link" href="http://chukeer.github.io/categories.html#skill-ref">Skill</a></td>
+                <td><a class="category-link" href="https://chukeer.github.io/categories.html#skill-ref">Skill</a></td>
             </tr>
             <tr>
                 <td>Tags</td>
                 <td>
                     <ul class="list-of-tags tags-in-article">
-                        <li><a href="http://chukeer.github.io/tags.html#ipc-ref">ipc
+                        <li><a href="https://chukeer.github.io/tags.html#ipc-ref">ipc
                             <span>1</span>
 </a></li>
                     </ul>
@@ -324,8 +324,8 @@ int mq_unlink(const char *name)
         <script src="http://code.jquery.com/jquery.min.js"></script>
         <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
         -->
-        <script src="http://chukeer.github.io/theme/js/jquery.min.js"></script>
-        <script src="http://chukeer.github.io/theme/js/bootstrap.min.js"></script>
+        <script src="https://chukeer.github.io/theme/js/jquery.min.js"></script>
+        <script src="https://chukeer.github.io/theme/js/bootstrap.min.js"></script>
         <script>
             function validateForm(query)
             {

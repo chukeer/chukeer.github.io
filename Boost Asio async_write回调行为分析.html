@@ -13,7 +13,7 @@
 <meta name="keywords" content="boost, Language, " />
 
 <meta property="og:title" content="Boost Asio async_write回调行为分析 "/>
-<meta property="og:url" content="http://chukeer.github.io/Boost Asio async_write回调行为分析.html" />
+<meta property="og:url" content="https://chukeer.github.io/Boost Asio async_write回调行为分析.html" />
 <meta property="og:description" content="本文主要分析async_write在一些边界情况下的回调行为，包括如下几点 对方接受缓慢 对方正常关闭 对方异常关闭 主动shutdown_receive 主动shutdown_send 主动shutdown_both 先给出结论 正常情况下async_write将数据写入socket发送缓冲区就会触发回调 在以下情况下async_write回调也会被触发，并携带相应错误码：对方关闭（close, kill, kill -9)，主动shutdown_send，主动shutdown_both 基本知识¶ 每个tcp socket在内核都有发送缓冲区和接收缓冲区，发送函数send只是将数据写入发送缓冲区，接受函数recv是将数据从接收缓冲区拷贝到应用层，当接收缓冲区已满时，收端会通知发端接收窗口关闭（win=0)。真正的tcp发送是由内核协议来完成的，即便发送进程退出，只要发送缓冲区还有数据，对方仍旧能收到这部分数据 async_write底层调用的async_write_some，可能会分多次调用，最终的发送也是将数据写入发送缓冲区，只有当async_write的所有数据都写入缓冲区，async_write的回调才会被调用 发送缓冲区写满的回调分析¶ 我们设计这样一种场景，当客户端连接上之后，服务端即调用async_write向其发送数据，并且在回调函数里继续调用async_write，观察回调情况，流程如下 每次async_write发送10K数据，并且客户端连接上来之后不调用recv，模拟接受缓慢的场景，观察on_write调用次数，关键代码如下 int ..." />
 <meta property="og:site_name" content="LittleWhite" />
 <meta property="og:article:author" content="littlewhite" />
@@ -28,12 +28,12 @@
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
         --!>
-        <link href="http://chukeer.github.io/theme/css/bootstrap-combined.min.css" rel="stylesheet">
-        <link href="http://chukeer.github.io/theme/css/font-awesome.css" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/pygments.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/tipuesearch/tipuesearch.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/elegant.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/custom.css" media="screen">
+        <link href="https://chukeer.github.io/theme/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="https://chukeer.github.io/theme/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="https://chukeer.github.io/theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://chukeer.github.io/theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://chukeer.github.io/theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://chukeer.github.io/theme/css/custom.css" media="screen">
     </head>
     <body>
         <div id="content-sans-footer">
@@ -45,14 +45,14 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </a>
-                    <a class="brand" href="http://chukeer.github.io/"><span class=site-name>LittleWhite</span></a>
+                    <a class="brand" href="https://chukeer.github.io/"><span class=site-name>LittleWhite</span></a>
                     <div class="nav-collapse collapse">
                         <ul class="nav pull-right top-menu">
-                            <li ><a href="http://chukeer.github.io">Home</a></li>
-                            <li ><a href="http://chukeer.github.io/categories.html">Categories</a></li>
-                            <li ><a href="http://chukeer.github.io/tags.html">Tags</a></li>
-                            <li ><a href="http://chukeer.github.io/archives.html">Archives</a></li>
-                            <li><form class="navbar-search" action="http://chukeer.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            <li ><a href="https://chukeer.github.io">Home</a></li>
+                            <li ><a href="https://chukeer.github.io/categories.html">Categories</a></li>
+                            <li ><a href="https://chukeer.github.io/tags.html">Tags</a></li>
+                            <li ><a href="https://chukeer.github.io/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="https://chukeer.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
                         </ul>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
 <article>
 <div class="row-fluid">
     <header class="page-header span10 offset2">
-    <h1><a href="http://chukeer.github.io/Boost Asio async_write回调行为分析.html"> Boost Asio async_write回调行为分析  </a></h1>
+    <h1><a href="https://chukeer.github.io/Boost Asio async_write回调行为分析.html"> Boost Asio async_write回调行为分析  </a></h1>
     </header>
 </div>
 
@@ -417,8 +417,8 @@
             <aside>
             <nav>
             <ul class="articles-timeline">
-                <li class="previous-article">« <a href="http://chukeer.github.io/cppcheck使用方式详解.html" title="Previous: cppcheck使用方式详解">cppcheck使用方式详解</a></li>
-                <li class="next-article"><a href="http://chukeer.github.io/boost内存池singleton_pool详解.html" title="Next: boost内存池singleton_pool详解">boost内存池singleton_pool详解</a> »</li>
+                <li class="previous-article">« <a href="https://chukeer.github.io/cppcheck使用方式详解.html" title="Previous: cppcheck使用方式详解">cppcheck使用方式详解</a></li>
+                <li class="next-article"><a href="https://chukeer.github.io/boost内存池singleton_pool详解.html" title="Next: boost内存池singleton_pool详解">boost内存池singleton_pool详解</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -433,13 +433,13 @@
             </tr>
             <tr>
                 <td>Category</td>
-                <td><a class="category-link" href="http://chukeer.github.io/categories.html#language-ref">Language</a></td>
+                <td><a class="category-link" href="https://chukeer.github.io/categories.html#language-ref">Language</a></td>
             </tr>
             <tr>
                 <td>Tags</td>
                 <td>
                     <ul class="list-of-tags tags-in-article">
-                        <li><a href="http://chukeer.github.io/tags.html#boost-ref">boost
+                        <li><a href="https://chukeer.github.io/tags.html#boost-ref">boost
                             <span>2</span>
 </a></li>
                     </ul>
@@ -466,8 +466,8 @@
         <script src="http://code.jquery.com/jquery.min.js"></script>
         <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
         -->
-        <script src="http://chukeer.github.io/theme/js/jquery.min.js"></script>
-        <script src="http://chukeer.github.io/theme/js/bootstrap.min.js"></script>
+        <script src="https://chukeer.github.io/theme/js/jquery.min.js"></script>
+        <script src="https://chukeer.github.io/theme/js/bootstrap.min.js"></script>
         <script>
             function validateForm(query)
             {

@@ -13,7 +13,7 @@
 <meta name="keywords" content="vim, Skill, " />
 
 <meta property="og:title" content="vim比较目录diff "/>
-<meta property="og:url" content="http://chukeer.github.io/vim比较目录diff.html" />
+<meta property="og:url" content="https://chukeer.github.io/vim比较目录diff.html" />
 <meta property="og:description" content="虽然现在有很多图形界面的diff工具，但对于有命令行情节的人来说，当飞快的在terminal下敲击键盘时，总不希望再拿鼠标去点击其它地方，况且有时候图形界面占用资源多，我的MBA就经常启动diffmerge时卡住，但vimdiff又只能在一个标签里比较一组文件的diff，如果想比较两个目录下文件的diff，它就显得无能为力了 假设我们要实现一个工具叫diffdir，先让我们脑洞打开设想一下它应该是怎样的 我希望能列出两个目录下文件名相同但内容不同的所有文件，并进行编号 我希望通过选择编号，打开需要比较diff的文件 如果想比较多组文件的diff，我希望每个vim标签打开一组文件比较 最好能过滤掉非文本文件，因为我不希望用vim打开一对二进制乱码 最好还能有交互，我可以选择只查看我感兴趣的文件，而不是一次打开所有文件的diff，当退出vim时我还可以继续选择 假设有两个目录分别是A和B，目录结构如下 A ├── file1 ├── file2 └── file3 B和A目录结构以及对应文件名都相同，其中file1和file2的内容不同，file3内容相同，那么当我们运行diffdir A B时，它应该是这样的界面 当我们选择编号1时，vim会打开一个标签对比两个目录下file1的差异 当我们选择1,2或1-2时，vim会打开两个标签分别比较file1和file2的差异 由于这个例子有diff的文件数量较少，我们还可以选择a一次打开所有文件的diff 如果diff文件个数较多 ..." />
 <meta property="og:site_name" content="LittleWhite" />
 <meta property="og:article:author" content="littlewhite" />
@@ -28,12 +28,12 @@
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
         --!>
-        <link href="http://chukeer.github.io/theme/css/bootstrap-combined.min.css" rel="stylesheet">
-        <link href="http://chukeer.github.io/theme/css/font-awesome.css" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/pygments.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/tipuesearch/tipuesearch.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/elegant.css" media="screen">
-        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/custom.css" media="screen">
+        <link href="https://chukeer.github.io/theme/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="https://chukeer.github.io/theme/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="https://chukeer.github.io/theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://chukeer.github.io/theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://chukeer.github.io/theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="https://chukeer.github.io/theme/css/custom.css" media="screen">
     </head>
     <body>
         <div id="content-sans-footer">
@@ -45,14 +45,14 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </a>
-                    <a class="brand" href="http://chukeer.github.io/"><span class=site-name>LittleWhite</span></a>
+                    <a class="brand" href="https://chukeer.github.io/"><span class=site-name>LittleWhite</span></a>
                     <div class="nav-collapse collapse">
                         <ul class="nav pull-right top-menu">
-                            <li ><a href="http://chukeer.github.io">Home</a></li>
-                            <li ><a href="http://chukeer.github.io/categories.html">Categories</a></li>
-                            <li ><a href="http://chukeer.github.io/tags.html">Tags</a></li>
-                            <li ><a href="http://chukeer.github.io/archives.html">Archives</a></li>
-                            <li><form class="navbar-search" action="http://chukeer.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            <li ><a href="https://chukeer.github.io">Home</a></li>
+                            <li ><a href="https://chukeer.github.io/categories.html">Categories</a></li>
+                            <li ><a href="https://chukeer.github.io/tags.html">Tags</a></li>
+                            <li ><a href="https://chukeer.github.io/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="https://chukeer.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
                         </ul>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
 <article>
 <div class="row-fluid">
     <header class="page-header span10 offset2">
-    <h1><a href="http://chukeer.github.io/vim比较目录diff.html"> vim比较目录diff  </a></h1>
+    <h1><a href="https://chukeer.github.io/vim比较目录diff.html"> vim比较目录diff  </a></h1>
     </header>
 </div>
 
@@ -438,8 +438,8 @@ show_diff <span class="nv">$tmp_dir</span>/diff_file
             <aside>
             <nav>
             <ul class="articles-timeline">
-                <li class="previous-article">« <a href="http://chukeer.github.io/vim自动更新tag.html" title="Previous: vim自动更新tag">vim自动更新tag</a></li>
-                <li class="next-article"><a href="http://chukeer.github.io/一行Python代码——单词逆转.html" title="Next: 一行Python代码——单词逆转">一行Python代码——单词逆转</a> »</li>
+                <li class="previous-article">« <a href="https://chukeer.github.io/vim自动更新tag.html" title="Previous: vim自动更新tag">vim自动更新tag</a></li>
+                <li class="next-article"><a href="https://chukeer.github.io/一行Python代码——单词逆转.html" title="Next: 一行Python代码——单词逆转">一行Python代码——单词逆转</a> »</li>
             </ul>
             </nav>
             </aside>
@@ -454,13 +454,13 @@ show_diff <span class="nv">$tmp_dir</span>/diff_file
             </tr>
             <tr>
                 <td>Category</td>
-                <td><a class="category-link" href="http://chukeer.github.io/categories.html#skill-ref">Skill</a></td>
+                <td><a class="category-link" href="https://chukeer.github.io/categories.html#skill-ref">Skill</a></td>
             </tr>
             <tr>
                 <td>Tags</td>
                 <td>
                     <ul class="list-of-tags tags-in-article">
-                        <li><a href="http://chukeer.github.io/tags.html#vim-ref">vim
+                        <li><a href="https://chukeer.github.io/tags.html#vim-ref">vim
                             <span>4</span>
 </a></li>
                     </ul>
@@ -487,8 +487,8 @@ show_diff <span class="nv">$tmp_dir</span>/diff_file
         <script src="http://code.jquery.com/jquery.min.js"></script>
         <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
         -->
-        <script src="http://chukeer.github.io/theme/js/jquery.min.js"></script>
-        <script src="http://chukeer.github.io/theme/js/bootstrap.min.js"></script>
+        <script src="https://chukeer.github.io/theme/js/jquery.min.js"></script>
+        <script src="https://chukeer.github.io/theme/js/bootstrap.min.js"></script>
         <script>
             function validateForm(query)
             {
