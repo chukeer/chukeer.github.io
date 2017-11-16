@@ -5,29 +5,36 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://chukeer.github.io/</loc>
-<lastmod>2017-11-09T22:28:50-00:00</lastmod>
+<lastmod>2017-11-16T23:01:58-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://chukeer.github.io/archives.html</loc>
-<lastmod>2017-11-09T22:28:50-00:00</lastmod>
+<lastmod>2017-11-16T23:01:58-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://chukeer.github.io/tags.html</loc>
-<lastmod>2017-11-09T22:28:50-00:00</lastmod>
+<lastmod>2017-11-16T23:01:58-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://chukeer.github.io/categories.html</loc>
-<lastmod>2017-11-09T22:28:50-00:00</lastmod>
+<lastmod>2017-11-16T23:01:58-00:00</lastmod>
 <changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>http://chukeer.github.io/boost内存池singleton_pool详解.html</loc>
+<lastmod>2017-11-16T00:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 

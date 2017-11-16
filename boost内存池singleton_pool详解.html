@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"> 
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="littlewhite" />
+        <meta name="copyright" content="littlewhite" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="c++, boost, Language, " />
+
+<meta property="og:title" content="boost内存池singleton_pool详解 "/>
+<meta property="og:url" content="http://chukeer.github.io/boost内存池singleton_pool详解.html" />
+<meta property="og:description" content="基本概念¶ 内存池可以避免频繁分配释放内存时导致操作系统内存碎片的问题 boost内存池提供了如下对象 singleton_pool 对pool内存池的封装，在其基础上加了锁，避免多线程操作的安全问题，并暴露了常用的接口。 pool 真正内存池的实现，管理block链表，并交给simple_segregated_storage分割成固定长度的chunk，每次给用户分配1个或多个chunk，每个chunk都是固定长度的 simple_segregated_storage 将block分割成chunk并组成链表进行管理 通常我们使用的都是singleton_pool对象 接口定义¶ 这里只列出常用接口 template &lt;typename Tag, unsigned RequestedSize, typename UserAllocator, typename Mutex, unsigned NextSize, unsigned MaxSize &gt; class singleton_pool { public: static void * malloc(); static void * ordered_malloc(); static void * ordered_malloc(const size_type n); static bool is_from ..." />
+<meta property="og:site_name" content="LittleWhite" />
+<meta property="og:article:author" content="littlewhite" />
+<meta property="og:article:published_time" content="2017-11-16T00:00:00+08:00" />
+<meta property="" content="2017-11-16T00:00:00+08:00" />
+<meta name="twitter:title" content="boost内存池singleton_pool详解 ">
+<meta name="twitter:description" content="基本概念¶ 内存池可以避免频繁分配释放内存时导致操作系统内存碎片的问题 boost内存池提供了如下对象 singleton_pool 对pool内存池的封装，在其基础上加了锁，避免多线程操作的安全问题，并暴露了常用的接口。 pool 真正内存池的实现，管理block链表，并交给simple_segregated_storage分割成固定长度的chunk，每次给用户分配1个或多个chunk，每个chunk都是固定长度的 simple_segregated_storage 将block分割成chunk并组成链表进行管理 通常我们使用的都是singleton_pool对象 接口定义¶ 这里只列出常用接口 template &lt;typename Tag, unsigned RequestedSize, typename UserAllocator, typename Mutex, unsigned NextSize, unsigned MaxSize &gt; class singleton_pool { public: static void * malloc(); static void * ordered_malloc(); static void * ordered_malloc(const size_type n); static bool is_from ...">
+
+        <title>boost内存池singleton_pool详解  · LittleWhite
+</title>
+        <!-- 
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
+        --!>
+        <link href="http://chukeer.github.io/theme/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="http://chukeer.github.io/theme/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://chukeer.github.io/theme/css/custom.css" media="screen">
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container-fluid">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="http://chukeer.github.io/"><span class=site-name>LittleWhite</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href="http://chukeer.github.io">Home</a></li>
+                            <li ><a href="http://chukeer.github.io/categories.html">Categories</a></li>
+                            <li ><a href="http://chukeer.github.io/tags.html">Tags</a></li>
+                            <li ><a href="http://chukeer.github.io/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="http://chukeer.github.io/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<article>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+    <h1><a href="http://chukeer.github.io/boost内存池singleton_pool详解.html"> boost内存池singleton_pool详解  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+    <div class="span2 table-of-content">
+        <nav>
+        <h4>Contents</h4>
+        <div class="toc">
+<ul>
+<li><a href="#_1">基本概念</a></li>
+<li><a href="#_2">接口定义</a></li>
+<li><a href="#_3">数据结构</a><ul>
+<li><a href="#block">block的管理</a></li>
+<li><a href="#chunk">chunk的管理</a></li>
+</ul>
+</li>
+<li><a href="#_4">分配内存</a></li>
+<li><a href="#_5">归还内存</a></li>
+<li><a href="#_6">清理内存</a></li>
+<li><a href="#_7">总结</a></li>
+</ul>
+</div>
+        </nav>
+    </div>
+    <div class="span8 article-content">
+            
+            
+<h2 id="_1">基本概念<a class="headerlink" href="#_1" title="Permanent link">¶</a></h2>
+<p>内存池可以避免频繁分配释放内存时导致操作系统内存碎片的问题</p>
+<p>boost内存池提供了如下对象</p>
+<ul>
+<li>
+<p>singleton_pool</p>
+<p>对pool内存池的封装，在其基础上加了锁，避免多线程操作的安全问题，并暴露了常用的接口。</p>
+</li>
+<li>
+<p>pool</p>
+<p>真正内存池的实现，管理block链表，并交给simple_segregated_storage分割成固定长度的chunk，每次给用户分配1个或多个chunk，每个chunk都是固定长度的</p>
+</li>
+<li>
+<p>simple_segregated_storage</p>
+<p>将block分割成chunk并组成链表进行管理</p>
+</li>
+</ul>
+<p>通常我们使用的都是singleton_pool对象</p>
+<h2 id="_2">接口定义<a class="headerlink" href="#_2" title="Permanent link">¶</a></h2>
+<p>这里只列出常用接口</p>
+<div class="highlight"><pre><span></span>template &lt;typename Tag,
+    unsigned RequestedSize,
+    typename UserAllocator,
+    typename Mutex,
+    unsigned NextSize,
+    unsigned MaxSize &gt;
+class singleton_pool
+{
+public:
+    static void * malloc();
+    static void * ordered_malloc();
+    static void * ordered_malloc(const size_type n);
+    static bool is_from(void * const ptr);
+    static void free(void * const ptr);
+    static void ordered_free(void * const ptr);
+    static void free(void * const ptr, const size_type n);
+    static void ordered_free(void * const ptr, const size_type n);
+    static bool release_memory();
+    static bool purge_memory();
+};
+</pre></div>
+<p>先看几个模板参数的含义</p>
+<ul>
+<li><code>Tag</code>: 一般定义为一个struct类型，用来唯一标识内存池对象</li>
+<li><code>RequestSize</code>: 每次向内存池请求的内存大小</li>
+<li><code>UserAllocator</code>: 用户自定义的内存分配器，向操作系统申请释放内存时使用，默认为boost::default_user_allocator_new_delete</li>
+<li><code>Mutex</code>: 互斥锁，默认为boost::details::pool::default_mutex</li>
+<li><code>NextSize</code>: 内存池向操作系统第一次申请内存的chunk数量，默认为32</li>
+<li><code>MaxSize</code>: 内存池向操作系统申请一次内存的最大chunk数量，默认为0，代表无上限</li>
+</ul>
+<p>使用方法如下</p>
+<div class="highlight"><pre><span></span><span class="nt">struct</span> <span class="nt">MyPoolTag</span>
+<span class="p">{</span>
+
+<span class="p">}</span><span class="o">;</span>
+
+<span class="nt">typedef</span> <span class="nt">boost</span><span class="o">:</span><span class="nd">:singleton_pool</span><span class="o">&lt;</span><span class="nt">MyPoolTag</span><span class="o">,</span> <span class="nt">1024</span><span class="o">&gt;</span> <span class="nt">my_pool</span><span class="o">;</span>
+
+<span class="nt">int</span> <span class="nt">main</span><span class="o">()</span>
+<span class="p">{</span>
+    <span class="n">char</span> <span class="o">*</span> <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">char</span><span class="o">*</span><span class="p">)</span><span class="n">my_pool</span><span class="o">::</span><span class="n">malloc</span><span class="p">();</span> <span class="o">//</span> <span class="err">分配内存大小为</span><span class="m">1024</span><span class="n">byte</span>
+    <span class="n">my_pool</span><span class="o">::</span><span class="n">free</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+    <span class="n">return</span> <span class="m">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>malloc和free用来向内存池分配和归还内存，ordered_*代表顺序内存的操作，release_memory可以释放ordered内存池里的空闲block，purge_memory强制释放内存池所有block，具体行为后续分析</p>
+<h2 id="_3">数据结构<a class="headerlink" href="#_3" title="Permanent link">¶</a></h2>
+<p>内存池里有两个关键对象，分别为block和chunk</p>
+<h3 id="block">block的管理<a class="headerlink" href="#block" title="Permanent link">¶</a></h3>
+<p>block为一大块连续的内存，chunk是由block分隔的等长内存块，其结构如下</p>
+<p><img alt="" src="http://littlewhite.us/pic/pool1.png"/></p>
+<p>block由pool对象进行管理，组成链表，next_ptr指向下个block，next_size为下个block的大小。对于非ordered内存池，每次申请的block放入链表头，如果是ordered内存池，则需要将block插入合适的位置，保持block起始地址的顺序</p>
+<p>假设RequestSize为1K，NextSize为默认值32， MaxSize为默认值0，那么第一次向内存池请求内存时，由于没有可用的block，内存池会向操作系统申请第一个block，包含32个chunk，当第一个block用完之后，下一次申请的block会包含64个chunk（为前一次的2倍），依次内推，如果指定的MaxSize大于0，则一次申请的block最多包含MaxSize个chunk</p>
+<h3 id="chunk">chunk的管理<a class="headerlink" href="#chunk" title="Permanent link">¶</a></h3>
+<p>每个block都交由simple_segregated_storage分割成chunk并进行管理，chunk也组成链表</p>
+<p>block分割之后结构如下</p>
+<p><img alt="" src="http://littlewhite.us/pic/pool2.png"/></p>
+<p>first指向第一个可用的chunk，每个chunk指向相邻的chunk。多个block之间的chunk也会组成链表（真实场景中chunk可能并不是有序的）</p>
+<p><img alt="" src="http://littlewhite.us/pic/pool3.png"/></p>
+<p>在初始化的时候，block中的chunk指向其物理地址相邻的且起始地址比它大的chunk，最后一个chunk指向NULL或下一个block的第一个chunk</p>
+<h2 id="_4">分配内存<a class="headerlink" href="#_4" title="Permanent link">¶</a></h2>
+<p>分配内存接口如下</p>
+<div class="highlight"><pre><span></span>static void * malloc();
+static void * ordered_malloc();
+static void * ordered_malloc(const size_type n);
+</pre></div>
+<p>malloc会返回第一个可用的chunk给用户，复杂度为O(1)，ordered_malloc还会保持block和chunk的顺序，复杂度为O(N)，只有在分配连续n个chunk时比较适用，其它时候不推荐使用ordered内存池</p>
+<p>假设NextSize为2，当我们调用4次malloc，分别分配buf1, buf2, buf3, buf4, 其过程如下</p>
+<ul>
+<li>分配buf1，没有可用block，内存池向操作系统申请block，包含2个chunk，并返回第一个chunk给用户</li>
+</ul>
+<p><img alt="" src="http://littlewhite.us/pic/malloc1.png"/></p>
+<ul>
+<li>分配buf2，有可用的block，直接返回first指向的chunk给用户，同时first指向NULL</li>
+</ul>
+<p><img alt="" src="http://littlewhite.us/pic/malloc2.png"/></p>
+<ul>
+<li>分配buf3，没有可用的block，内存池向操作系统申请新的block，包含4个chunk，并返回第一个chunk给用户，新的block插入block链表的头部</li>
+</ul>
+<p><img alt="" src="http://littlewhite.us/pic/malloc3.png"/></p>
+<ul>
+<li>分配buf4，有可用的block，直接返回first指向的chunk给用户</li>
+</ul>
+<p><img alt="" src="http://littlewhite.us/pic/malloc4.png"/></p>
+<p>对于ordered_malloc，其区别在于向操作系统申请新的block之后，会将block插入合适的位置，以保持block地址的顺序性</p>
+<h2 id="_5">归还内存<a class="headerlink" href="#_5" title="Permanent link">¶</a></h2>
+<p>归还内存接口如下</p>
+<div class="highlight"><pre><span></span>static void ordered_free(void * const ptr);
+static void free(void * const ptr, const size_type n);
+static void ordered_free(void * const ptr, const size_type n);
+</pre></div>
+<p>free会将归还的chunk直接指向first，将first指向归还的chunk，复杂度为O(1)，ordered_free在归还chunk时会保持其最初在链表中的顺序，复杂度为O(N)，ordered_free可以返回连续chunk</p>
+<p>在前面例子的基础上，我们按以下顺序分别释放buf，对比free和ordered_free操作的内存结构变化(为了简化，某些步骤会省略掉NULL指针以及next_ptr的指向关系)</p>
+<table>
+<thead>
+<tr>
+<th align="left">操作步骤</th>
+<th>free</th>
+<th align="right">ordered_free</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">分配之后的结构</td>
+<td><img alt="" src="http://littlewhite.us/pic/free0.png"/></td>
+<td align="right"><img alt="" src="http://littlewhite.us/pic/free0.png"/></td>
+</tr>
+<tr>
+<td align="left">释放buf1</td>
+<td><img alt="" src="http://littlewhite.us/pic/free1.png"/></td>
+<td align="right"><img alt="" src="http://littlewhite.us/pic/ordered_free1.png"/></td>
+</tr>
+<tr>
+<td align="left">释放buf2</td>
+<td><img alt="" src="http://littlewhite.us/pic/free2.png"/></td>
+<td align="right"><img alt="" src="http://littlewhite.us/pic/ordered_free2.png"/></td>
+</tr>
+<tr>
+<td align="left">释放buf3</td>
+<td><img alt="" src="http://littlewhite.us/pic/free3.png"/></td>
+<td align="right"><img alt="" src="http://littlewhite.us/pic/ordered_free3.png"/></td>
+</tr>
+<tr>
+<td align="left">释放buf4</td>
+<td><img alt="" src="http://littlewhite.us/pic/free4.png"/></td>
+<td align="right"><img alt="" src="http://littlewhite.us/pic/ordered_free4.png"/></td>
+</tr>
+</tbody>
+</table>
+<p>调用free之后，chunk的指向关系和chunk最初在block中被分割的顺序完全不一致，但每次释放只需在chunk链表的头部操作，因此效率非常高</p>
+<p>而调用ordered_free后，所有chunk仍旧保持了最初分割时候的顺序，但是在释放每个chunk时，都需要从first开始查找，找到一个合适的位置进进行插入</p>
+<h2 id="_6">清理内存<a class="headerlink" href="#_6" title="Permanent link">¶</a></h2>
+<p>清理内存有如下连个接口</p>
+<div class="highlight"><pre><span></span>static bool release_memory();
+static bool purge_memory();
+</pre></div>
+<p>purge_memory会将所有block无条件释放，即便有些chunk已经分配出去，因此要慎用。release_memory只对ordered内存池有效，会释放没有分配chunk的block，假设现在内存结构如下</p>
+<p><img alt="" src="http://littlewhite.us/pic/ordered_free3.png"/></p>
+<p>block1的两个chunk都还没被分配出去，block2有一个chunk已分配出去，并且内存池为ordered结构，此时调用release_memory后，block1会被归还给操作系统，内存结构如下</p>
+<p><img alt="" src="http://littlewhite.us/pic/release_memory.png"/></p>
+<h2 id="_7">总结<a class="headerlink" href="#_7" title="Permanent link">¶</a></h2>
+<p>boost内存池提供了丰富的接口，malloc和free都非常高效，但是由于是非ordered，无法手动回收内存，如果服务内存突增之后又降下来，内存池会一直占用峰值达到的内存</p>
+<p>ordered内存池虽然支持内存回收，但分配效率不高，不推荐使用</p>
+            
+            
+            <hr/>
+            <aside>
+            <nav>
+            <ul class="articles-timeline">
+                <li class="previous-article">« <a href="http://chukeer.github.io/Boost Asio async_write回调行为分析.html" title="Previous: Boost Asio async_write回调行为分析">Boost Asio async_write回调行为分析</a></li>
+            </ul>
+            </nav>
+            </aside>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+            <table class="table">
+            <!-- <time pubdate="pubdate" datetime="2017-11-16T00:00:00+08:00">11 16, 2017</time> -->
+            <tr>
+                <td>Published</td>
+                <td><time pubdate="pubdate" datetime="2017-11-16T00:00:00+08:00">2017-11-16</time></td>
+            </tr>
+            <tr>
+                <td>Category</td>
+                <td><a class="category-link" href="http://chukeer.github.io/categories.html#language-ref">Language</a></td>
+            </tr>
+            <tr>
+                <td>Tags</td>
+                <td>
+                    <ul class="list-of-tags tags-in-article">
+                        <li><a href="http://chukeer.github.io/tags.html#boost-ref">boost
+                            <span>2</span>
+</a></li>
+                        <li><a href="http://chukeer.github.io/tags.html#c-ref">c++
+                            <span>15</span>
+</a></li>
+                    </ul>
+                </td>
+            </tr>
+            </table>
+        </div>
+        </section>
+</div>
+</article>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+        <div id="push"></div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
+    </ul>
+</div>
+</footer>            <!--
+        <script src="http://code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        -->
+        <script src="http://chukeer.github.io/theme/js/jquery.min.js"></script>
+        <script src="http://chukeer.github.io/theme/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+        <script>
+            $("div.article-content table").addClass("table table-hover");
+        </script>
+
+    
+    </body>
+    <!-- Theme: Elegant built for Pelican
+    License : http://oncrashreboot.com/pelican-elegant -->
+</html>
