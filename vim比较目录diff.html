@@ -15,14 +15,14 @@
 <meta property="og:title" content="vim比较目录diff "/>
 <meta property="og:url" content="https://chukeer.github.io/vim比较目录diff.html" />
 <meta property="og:description" content="虽然现在有很多图形界面的diff工具，但对于有命令行情节的人来说，当飞快的在terminal下敲击键盘时，总不希望再拿鼠标去点击其它地方，况且有时候图形界面占用资源多，我的MBA就经常启动diffmerge时卡住，但vimdiff又只能在一个标签里比较一组文件的diff，如果想比较两个目录下文件的diff，它就显得无能为力了 假设我们要实现一个工具叫diffdir，先让我们脑洞打开设想一下它应该是怎样的 我希望能列出两个目录下文件名相同但内容不同的所有文件，并进行编号 我希望通过选择编号，打开需要比较diff的文件 如果想比较多组文件的diff，我希望每个vim标签打开一组文件比较 最好能过滤掉非文本文件，因为我不希望用vim打开一对二进制乱码 最好还能有交互，我可以选择只查看我感兴趣的文件，而不是一次打开所有文件的diff，当退出vim时我还可以继续选择 假设有两个目录分别是A和B，目录结构如下 A ├── file1 ├── file2 └── file3 B和A目录结构以及对应文件名都相同，其中file1和file2的内容不同，file3内容相同，那么当我们运行diffdir A B时，它应该是这样的界面 当我们选择编号1时，vim会打开一个标签对比两个目录下file1的差异 当我们选择1,2或1-2时，vim会打开两个标签分别比较file1和file2的差异 由于这个例子有diff的文件数量较少，我们还可以选择a一次打开所有文件的diff 如果diff文件个数较多 ..." />
-<meta property="og:site_name" content="LittleWhite" />
+<meta property="og:site_name" content="楚客" />
 <meta property="og:article:author" content="littlewhite" />
 <meta property="og:article:published_time" content="2015-04-27T00:00:00+08:00" />
 <meta property="" content="2015-04-27T00:00:00+08:00" />
 <meta name="twitter:title" content="vim比较目录diff ">
 <meta name="twitter:description" content="虽然现在有很多图形界面的diff工具，但对于有命令行情节的人来说，当飞快的在terminal下敲击键盘时，总不希望再拿鼠标去点击其它地方，况且有时候图形界面占用资源多，我的MBA就经常启动diffmerge时卡住，但vimdiff又只能在一个标签里比较一组文件的diff，如果想比较两个目录下文件的diff，它就显得无能为力了 假设我们要实现一个工具叫diffdir，先让我们脑洞打开设想一下它应该是怎样的 我希望能列出两个目录下文件名相同但内容不同的所有文件，并进行编号 我希望通过选择编号，打开需要比较diff的文件 如果想比较多组文件的diff，我希望每个vim标签打开一组文件比较 最好能过滤掉非文本文件，因为我不希望用vim打开一对二进制乱码 最好还能有交互，我可以选择只查看我感兴趣的文件，而不是一次打开所有文件的diff，当退出vim时我还可以继续选择 假设有两个目录分别是A和B，目录结构如下 A ├── file1 ├── file2 └── file3 B和A目录结构以及对应文件名都相同，其中file1和file2的内容不同，file3内容相同，那么当我们运行diffdir A B时，它应该是这样的界面 当我们选择编号1时，vim会打开一个标签对比两个目录下file1的差异 当我们选择1,2或1-2时，vim会打开两个标签分别比较file1和file2的差异 由于这个例子有diff的文件数量较少，我们还可以选择a一次打开所有文件的diff 如果diff文件个数较多 ...">
 
-        <title>vim比较目录diff  · LittleWhite
+        <title>vim比较目录diff  · 楚客
 </title>
         <!-- 
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
@@ -45,7 +45,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </a>
-                    <a class="brand" href="https://chukeer.github.io/"><span class=site-name>LittleWhite</span></a>
+                    <a class="brand" href="https://chukeer.github.io/"><span class=site-name>楚客</span></a>
                     <div class="nav-collapse collapse">
                         <ul class="nav pull-right top-menu">
                             <li ><a href="https://chukeer.github.io">Home</a></li>
